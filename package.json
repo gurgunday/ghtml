@@ -3,7 +3,7 @@
   "description": "Replace your template engine with fast JavaScript by leveraging the power of tagged templates.",
   "author": "Gürgün Dayıoğlu",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./src/index.js",
   "exports": {
