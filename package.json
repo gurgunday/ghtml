@@ -19,7 +19,7 @@
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "devDependencies": {
-    "grules": "^0.11.0"
+    "grules": "^0.12.1"
   },
   "repository": {
     "type": "git",
