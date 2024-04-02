@@ -70,7 +70,10 @@ const htmlGenerator = function* (literals, ...expressions) {
     let literal = literals.raw[index];
     let expression = expressions[index];
 
-    if (typeof expression?.[Symbol.iterator] === "function") {
+    if (
+      typeof expression === "object" &&
+      typeof expression?.[Symbol.iterator] === "function"
+    ) {
       yield literal;
       yield* expression;
     } else {
