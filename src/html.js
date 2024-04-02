@@ -21,14 +21,13 @@ const escapeFunction = (key) => {
  * @returns {string}
  */
 const html = (literals, ...expressions) => {
-  const lastLiteralIndex = literals.raw.length - 1;
   let accumulator = "";
 
-  if (lastLiteralIndex === -1) {
+  if (literals.raw.length === 0) {
     return accumulator;
   }
 
-  for (let index = 0; index < lastLiteralIndex; ++index) {
+  for (let index = 0; index < expressions.length; ++index) {
     let literal = literals.raw[index];
     let expression =
       typeof expressions[index] === "string"
@@ -48,7 +47,7 @@ const html = (literals, ...expressions) => {
     accumulator += literal + expression;
   }
 
-  accumulator += literals.raw[lastLiteralIndex];
+  accumulator += literals.raw[expressions.length];
 
   return accumulator;
 };
