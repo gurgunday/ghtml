@@ -16,9 +16,9 @@ const escapeFunction = (key) => {
 };
 
 /**
- * @param {{ raw: string[] }} literals
- * @param {...any} expressions
- * @returns {string}
+ * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {...any} expressions Expressions to interpolate.
+ * @returns {string} The HTML string.
  */
 const html = (literals, ...expressions) => {
   let accumulator = "";

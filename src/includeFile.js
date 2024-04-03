@@ -5,8 +5,8 @@ const readFileSyncOptions = { encoding: "utf8" };
 const fileCache = new Map();
 
 /**
- * @param {string} path
- * @returns {string}
+ * @param {string} path The path to the file to render.
+ * @returns {string} The cached content of the file.
  */
 const includeFile = (path) => {
   let file = fileCache.get(path);
