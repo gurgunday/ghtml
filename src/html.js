@@ -28,8 +28,7 @@ const html = (literals, ...expressions) => {
   }
 
   for (let index = 0; index < expressions.length; ++index) {
-    let literal = literals.raw[index];
-    let expression =
+    const expression =
       typeof expressions[index] === "string"
         ? expressions[index]
         : expressions[index] == null
@@ -38,13 +37,16 @@ const html = (literals, ...expressions) => {
             ? expressions[index].join("")
             : `${expressions[index]}`;
 
-    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
-      literal = literal.slice(0, -1);
-    } else if (expression.length) {
-      expression = expression.replace(escapeRegExp, escapeFunction);
+    if (
+      literals.raw[index].length &&
+      literals.raw[index].charCodeAt(literals.raw[index].length - 1) === 33
+    ) {
+      accumulator += literals.raw[index].slice(0, -1) + expression;
+      continue;
     }
 
-    accumulator += literal + expression;
+    accumulator +=
+      literals.raw[index] + expression.replace(escapeRegExp, escapeFunction);
   }
 
   accumulator += literals.raw[expressions.length];
