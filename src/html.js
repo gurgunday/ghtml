@@ -23,7 +23,7 @@ const escapeFunction = (key) => {
 const html = (literals, ...expressions) => {
   let accumulator = "";
 
-  if (literals.raw.length === 0) {
+  if (!literals.raw.length) {
     return accumulator;
   }
 
