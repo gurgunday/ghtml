@@ -12,7 +12,7 @@ const conditionFalse = false;
 const emptyString = "";
 
 test("renders empty input", () => {
-  assert.strictEqual(html({ raw: [] }), "");
+  assert.strictEqual(html({ raw: [""] }), "");
 });
 
 test("renders empty input", () => {
