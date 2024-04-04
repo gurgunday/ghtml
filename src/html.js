@@ -43,7 +43,7 @@ const html = (literals, ...expressions) => {
     accumulator += literal + expression;
   }
 
-  accumulator += literals.raw[expressions.length] ?? "";
+  accumulator += literals.raw[expressions.length];
 
   return accumulator;
 };
