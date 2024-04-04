@@ -23,10 +23,6 @@ const escapeFunction = (key) => {
 const html = (literals, ...expressions) => {
   let accumulator = "";
 
-  if (!literals.raw.length) {
-    return accumulator;
-  }
-
   for (let index = 0; index < expressions.length; ++index) {
     const expression =
       typeof expressions[index] === "string"
