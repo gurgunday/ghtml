@@ -10,11 +10,21 @@ npm i ghtml
 
 ## API Reference
 
-The main export of the package is the `html` function that can be used to tag template literals and escape their expressions. To bypass escaping an expression, prefix it with `!`.
+### `html`
 
-Node.js users also have access to the `includeFile` function that reads and outputs the content of a file while caching it in memory for future use.
+The `html` function is used to tag template literals and escape their expressions. To bypass escaping an expression, prefix it with `!`.
+
+### `htmlGenerator`
+
+The `htmlGenerator` function is a generator version of the `html` function. It allows for the generation of HTML fragments in a streaming manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
+
+### `includeFile`
+
+Available for Node.js users, the `includeFile` function reads and outputs the content of a file, caching it in memory for future reuse.
 
 ## Usage
+
+### `html`
 
 ```js
 import { html } from "ghtml";
@@ -24,7 +34,11 @@ const greeting = html`<h1>Hello, ${username}!</h1>`;
 
 console.log(greeting);
 // Output: <h1>Hello, &lt;img src=&quot;https://example.com/hacker.png&quot;&gt;</h1>
+```
 
+To bypass escaping:
+
+```js
 const img = '<img src="https://example.com/safe.png">';
 const container = html`<div>!${img}</div>`;
 
@@ -32,7 +46,22 @@ console.log(container);
 // Output: <div><img src="https://example.com/safe.png"></div>
 ```
 
-The `includeFile` function returns the content of a file. Again, remember that it also caches the result, so any subsequent modifications to the same file won't be reflected until the app is restarted:
+### `htmlGenerator`
+
+The `htmlGenerator` function can be used to yield HTML fragments sequentially. This is especially useful when working with streams or large data sets.
+
+```js
+import { htmlGenerator } from "ghtml";
+
+const items = ["Item 1", "Item 2", "Item 3"];
+const listGenerator = htmlGenerator`<ul>${items.map((item) => html`<li>${item}</li>`)}</ul>`;
+
+for (let fragment of listGenerator) {
+  console.log(fragment);
+}
+```
+
+### Reading and Caching Files with `includeFile`
 
 ```js
 import { includeFile } from "ghtml/includeFile.js";
