@@ -16,19 +16,14 @@ const escapeFunction = (key) => {
 };
 
 /**
- * @param {{ raw: string[] }} literals
- * @param {...any} expressions
- * @returns {string}
+ * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {...any} expressions Expressions to interpolate.
+ * @returns {string} The HTML string.
  */
 const html = (literals, ...expressions) => {
-  const lastLiteralIndex = literals.raw.length - 1;
   let accumulator = "";
 
-  if (lastLiteralIndex === -1) {
-    return accumulator;
-  }
-
-  for (let index = 0; index < lastLiteralIndex; ++index) {
+  for (let index = 0; index < expressions.length; ++index) {
     let literal = literals.raw[index];
     let expression =
       typeof expressions[index] === "string"
@@ -48,7 +43,7 @@ const html = (literals, ...expressions) => {
     accumulator += literal + expression;
   }
 
-  accumulator += literals.raw[lastLiteralIndex];
+  accumulator += literals.raw[expressions.length];
 
   return accumulator;
 };
