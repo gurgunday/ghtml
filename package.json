@@ -19,6 +19,7 @@
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "devDependencies": {
+    "@fastify/pre-commit": "^2.1.0",
     "grules": "^0.12.1"
   },
   "repository": {
