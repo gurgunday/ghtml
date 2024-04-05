@@ -63,13 +63,11 @@ const htmlGenerator = function* (literals, ...expressions) {
     } else if (expressions[index] == null) {
       expression = "";
     } else if (typeof expressions[index][Symbol.iterator] === "function") {
-      let accumulator = "";
+      expression = "";
 
       for (const value of expressions[index]) {
-        accumulator += value;
+        expression += value;
       }
-
-      expression = accumulator;
     } else if (Array.isArray(expressions[index])) {
       expression = expressions[index].join("");
     } else {
