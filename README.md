@@ -48,20 +48,23 @@ console.log(container);
 
 ### `htmlGenerator`
 
-The `htmlGenerator` function can be used to yield HTML fragments sequentially. This is especially useful when working with streams or large data sets.
-
 ```js
-import { htmlGenerator } from "ghtml";
+import { htmlGenerator as html } from "ghtml";
+import { Readable } from "node:stream";
 
-const items = ["Item 1", "Item 2", "Item 3"];
-const listGenerator = htmlGenerator`<ul>${items.map((item) => html`<li>${item}</li>`)}</ul>`;
+const generateHtmlContent = html`<html>
+  <p>...your HTML content...</p>
+</html>`;
 
-for (let fragment of listGenerator) {
-  console.log(fragment);
-}
+const readableStream = Readable.from(generateHtmlContent);
+
+http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/html" });
+  readableStream.pipe(res);
+});
 ```
 
-### Reading and Caching Files with `includeFile`
+### `includeFile`
 
 ```js
 import { includeFile } from "ghtml/includeFile.js";
