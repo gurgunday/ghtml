@@ -56,24 +56,24 @@ const html = (literals, ...expressions) => {
 const htmlGenerator = function* (literals, ...expressions) {
   for (let index = 0; index < expressions.length; ++index) {
     let literal = literals.raw[index];
-    let expression = expressions[index];
+    let expression;
 
-    if (typeof expression !== "string") {
-      if (expression == null) {
-        expression = "";
-      } else if (typeof expression[Symbol.iterator] === "function") {
-        let accumulator = "";
+    if (typeof expressions[index] === "string") {
+      expression = expressions[index];
+    } else if (expressions[index] == null) {
+      expression = "";
+    } else if (typeof expressions[index][Symbol.iterator] === "function") {
+      let accumulator = "";
 
-        for (const value of expression) {
-          accumulator += value;
-        }
-
-        expression = accumulator;
-      } else if (Array.isArray(expression)) {
-        expression = expression.join("");
-      } else {
-        expression = `${expression}`;
+      for (const value of expressions[index]) {
+        accumulator += value;
       }
+
+      expression = accumulator;
+    } else if (Array.isArray(expressions[index])) {
+      expression = expressions[index].join("");
+    } else {
+      expression = `${expressions[index]}`;
     }
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
