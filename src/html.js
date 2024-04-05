@@ -57,7 +57,9 @@ const html = (literals, ...expressions) => {
  * @yields {string} The HTML strings.
  */
 const htmlGenerator = function* (literals, ...expressions) {
-  for (let index = 0; index < expressions.length; ++index) {
+  let index = 0;
+
+  while (index < expressions.length) {
     let literal = literals.raw[index];
     let expression;
 
@@ -78,6 +80,8 @@ const htmlGenerator = function* (literals, ...expressions) {
           yield isRaw ? value : value.replace(escapeRegExp, escapeFunction);
         }
 
+        ++index;
+
         continue;
       }
 
@@ -91,9 +95,11 @@ const htmlGenerator = function* (literals, ...expressions) {
     }
 
     yield literal + expression;
+
+    ++index;
   }
 
-  yield literals.raw[expressions.length];
+  yield literals.raw[index];
 };
 
 export { html, htmlGenerator };
