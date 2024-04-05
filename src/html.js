@@ -49,49 +49,43 @@ const html = (literals, ...expressions) => {
 };
 
 /**
- * @param {{ raw: string[] }} literals
- * @param {...any} expressions
- * @yields {string}
+ * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {...any} expressions Expressions to interpolate.
+ * @yields {string} The HTML strings.
  */
 const htmlGenerator = function* (literals, ...expressions) {
-  const lastLiteralIndex = literals.raw.length - 1;
-
-  if (lastLiteralIndex === -1) {
-    yield "";
-    return;
-  }
-
-  for (let index = 0; index < lastLiteralIndex; ++index) {
+  for (let index = 0; index < expressions.length; ++index) {
     let literal = literals.raw[index];
     let expression = expressions[index];
 
-    if (
-      typeof expression === "object" &&
-      typeof expression?.[Symbol.iterator] === "function"
-    ) {
-      yield literal;
-      yield* expression;
-    } else {
-      if (typeof expression !== "string") {
-        expression =
-          expression == null
-            ? ""
-            : Array.isArray(expression)
-              ? expression.join("")
-              : `${expression}`;
-      }
+    if (typeof expression !== "string") {
+      if (expression == null) {
+        expression = "";
+      } else if (typeof expression[Symbol.iterator] === "function") {
+        let accumulator = "";
 
-      if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
-        literal = literal.slice(0, -1);
-      } else if (expression.length) {
-        expression = expression.replace(escapeRegExp, escapeFunction);
-      }
+        for (const value of expression) {
+          accumulator += value;
+        }
 
-      yield literal + expression;
+        expression = accumulator;
+      } else if (Array.isArray(expression)) {
+        expression = expression.join("");
+      } else {
+        expression = `${expression}`;
+      }
     }
+
+    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
+      literal = literal.slice(0, -1);
+    } else if (expression.length) {
+      expression = expression.replace(escapeRegExp, escapeFunction);
+    }
+
+    yield literal + expression;
   }
 
-  yield literals.raw[lastLiteralIndex];
+  yield literals.raw[expressions.length];
 };
 
 export { html, htmlGenerator };
