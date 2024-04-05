@@ -74,14 +74,17 @@ const htmlGenerator = function* (literals, ...expressions) {
         const isRaw =
           literal.length > 0 && literal.charCodeAt(literal.length - 1) === 33;
 
-        yield isRaw ? literal.slice(0, -1) : literal;
+        if (literal.length) {
+          yield isRaw ? literal.slice(0, -1) : literal;
+        }
 
         for (const value of expressions[index]) {
+          expression = typeof value === "string" ? value : `${value ?? ""}`;
+
           yield isRaw ? value : value.replace(escapeRegExp, escapeFunction);
         }
 
         ++index;
-
         continue;
       }
 
@@ -94,12 +97,18 @@ const htmlGenerator = function* (literals, ...expressions) {
       expression = expression.replace(escapeRegExp, escapeFunction);
     }
 
-    yield literal + expression;
+    literal += expression;
+
+    if (literal.length) {
+      yield literal;
+    }
 
     ++index;
   }
 
-  yield literals.raw[index];
+  if (literals.raw[index].length) {
+    yield literals.raw[index];
+  }
 };
 
 export { html, htmlGenerator };
