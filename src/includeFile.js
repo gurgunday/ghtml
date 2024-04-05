@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 
 const readFileSyncOptions = { encoding: "utf8" };
+
 const fileCache = new Map();
 
 /**
