@@ -62,15 +62,22 @@ const htmlGenerator = function* (literals, ...expressions) {
       expression = expressions[index];
     } else if (expressions[index] == null) {
       expression = "";
-    } else if (typeof expressions[index][Symbol.iterator] === "function") {
-      expression = "";
-
-      for (const value of expressions[index]) {
-        expression += value;
-      }
     } else if (Array.isArray(expressions[index])) {
       expression = expressions[index].join("");
     } else {
+      if (typeof expressions[index][Symbol.iterator] === "function") {
+        const isRaw =
+          literal.length > 0 && literal.charCodeAt(literal.length - 1) === 33;
+
+        yield isRaw ? literal.slice(0, -1) : literal;
+
+        for (const value of expressions[index]) {
+          yield isRaw ? value : value.replace(escapeRegExp, escapeFunction);
+        }
+
+        continue;
+      }
+
       expression = `${expressions[index]}`;
     }
 
