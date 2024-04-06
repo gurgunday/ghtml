@@ -20,7 +20,7 @@ The `htmlGenerator` function is the generator version of the `html` function. It
 
 ### `includeFile`
 
-Available for Node.js users, the `includeFile` function reads and outputs the content of a file, while also caching it in memory for future reuse.
+Available for Node.js users, the `includeFile` function is a wrapper around `readFileSync`. It reads and outputs the content of a file while also caching it in memory for faster future reuse.
 
 ## Usage
 
@@ -46,6 +46,33 @@ console.log(container);
 // Output: <div><img src="https://example.com/safe.png"></div>
 ```
 
+When nesting multiple `html` expressions, always use `!` as they will do their own escaping:
+
+```js
+const someCondition = Math.random() >= 0.5;
+const data = {
+  username: "John",
+  age: 21,
+};
+
+const htmlString = html`
+  <div>
+    !${someCondition
+      ? html`
+          <p>Data:</p>
+          <ul>
+            ${Object.values(data).map(
+              ([key, val]) => `
+                ${key}: ${val}
+              `,
+            )}
+          </ul>
+        `
+      : "<p>No data...</p>"}
+  </div>
+`;
+```
+
 ### `htmlGenerator`
 
 ```js
@@ -55,7 +82,6 @@ import { Readable } from "node:stream";
 const htmlContent = html`<html>
   <p>${"...your HTML content..."}</p>
 </html>`;
-
 const readableStream = Readable.from(htmlContent);
 
 http.createServer((req, res) => {
