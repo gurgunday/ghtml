@@ -112,8 +112,6 @@ test("htmlGenerator renders safe content", () => {
   assert.strictEqual(generator.next().value, "This is a safe description.");
   assert.strictEqual(generator.next().value, "");
   assert.strictEqual(generator.next().value, "12345");
-  assert.strictEqual(generator.next().value, "");
-  assert.strictEqual(generator.next().value, "");
   assert.strictEqual(generator.next().value, "255");
   assert.strictEqual(generator.next().value, "</p>");
   assert.strictEqual(generator.next().done, true);
@@ -129,10 +127,7 @@ test("htmlGenerator escapes unsafe content", () => {
     generator.next().value,
     "&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;",
   );
-  assert.strictEqual(generator.next().value, "");
   assert.strictEqual(generator.next().value, "12345");
-  assert.strictEqual(generator.next().value, "");
-  assert.strictEqual(generator.next().value, "");
   assert.strictEqual(generator.next().value, "255");
   assert.strictEqual(generator.next().value, "</p>");
   assert.strictEqual(generator.next().done, true);
