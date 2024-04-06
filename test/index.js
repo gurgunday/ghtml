@@ -11,6 +11,16 @@ const conditionTrue = true;
 const conditionFalse = false;
 const emptyString = "";
 
+const generatorExample = function* () {
+  yield "<p>";
+  yield descriptionSafe;
+  yield descriptionUnsafe;
+  yield array1;
+  yield null;
+  yield 255;
+  yield "</p>";
+};
+
 test("renders empty input", () => {
   assert.strictEqual(html({ raw: [""] }), "");
 });
@@ -130,5 +140,21 @@ test("htmlGenerator escapes unsafe content", () => {
   assert.strictEqual(generator.next().value, "12345");
   assert.strictEqual(generator.next().value, "255");
   assert.strictEqual(generator.next().value, "</p>");
+  assert.strictEqual(generator.next().done, true);
+});
+
+test("htmlGenerator works with other generators", () => {
+  const generator = htmlGenerator`<div>!${generatorExample()}</div>`;
+  assert.strictEqual(generator.next().value, "<div>");
+  assert.strictEqual(generator.next().value, "<p>");
+  assert.strictEqual(generator.next().value, "This is a safe description.");
+  assert.strictEqual(
+    generator.next().value,
+    "<script>alert('This is an unsafe description.')</script>",
+  );
+  assert.strictEqual(generator.next().value, "12345");
+  assert.strictEqual(generator.next().value, "255");
+  assert.strictEqual(generator.next().value, "</p>");
+  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });
