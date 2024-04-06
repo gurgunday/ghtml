@@ -99,10 +99,8 @@ const htmlGenerator = function* (literals, ...expressions) {
       expression = expression.replace(escapeRegExp, escapeFunction);
     }
 
-    literal += expression;
-
-    if (literal.length) {
-      yield literal;
+    if (literal.length || expression.length) {
+      yield literal + expression;
     }
 
     ++index;
