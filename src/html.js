@@ -42,7 +42,6 @@ const html = (literals, ...expressions) => {
     }
 
     accumulator += literal + expression;
-
     ++index;
   }
 
