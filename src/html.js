@@ -81,9 +81,11 @@ const htmlGenerator = function* (literals, ...expressions) {
         for (const value of expressions[index]) {
           expression = typeof value === "string" ? value : `${value ?? ""}`;
 
-          yield isRaw
-            ? expression
-            : expression.replace(escapeRegExp, escapeFunction);
+          if (expression.length) {
+            yield isRaw
+              ? expression
+              : expression.replace(escapeRegExp, escapeFunction);
+          }
         }
 
         ++index;
