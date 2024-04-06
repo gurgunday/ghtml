@@ -42,7 +42,6 @@ const html = (literals, ...expressions) => {
     }
 
     accumulator += literal + expression;
-
     ++index;
   }
 
@@ -51,4 +50,79 @@ const html = (literals, ...expressions) => {
   return accumulator;
 };
 
-export { html };
+/**
+ * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {...any} expressions Expressions to interpolate.
+ * @yields {string} The HTML strings.
+ */
+const htmlGenerator = function* (literals, ...expressions) {
+  let index = 0;
+
+  while (index < expressions.length) {
+    let literal = literals.raw[index];
+    let expression;
+
+    if (typeof expressions[index] === "string") {
+      expression = expressions[index];
+    } else if (expressions[index] == null) {
+      expression = "";
+    } else if (Array.isArray(expressions[index])) {
+      expression = expressions[index].join("");
+    } else {
+      if (typeof expressions[index][Symbol.iterator] === "function") {
+        const isRaw =
+          literal.length > 0 && literal.charCodeAt(literal.length - 1) === 33;
+
+        if (isRaw) {
+          literal = literal.slice(0, -1);
+        }
+
+        if (literal.length) {
+          yield literal;
+        }
+
+        for (const value of expressions[index]) {
+          expression =
+            typeof value === "string"
+              ? value
+              : value == null
+                ? ""
+                : Array.isArray(value)
+                  ? value.join("")
+                  : `${value}`;
+
+          if (expression.length) {
+            if (!isRaw) {
+              expression = expression.replace(escapeRegExp, escapeFunction);
+            }
+
+            yield expression;
+          }
+        }
+
+        ++index;
+        continue;
+      }
+
+      expression = `${expressions[index]}`;
+    }
+
+    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
+      literal = literal.slice(0, -1);
+    } else if (expression.length) {
+      expression = expression.replace(escapeRegExp, escapeFunction);
+    }
+
+    if (literal.length || expression.length) {
+      yield literal + expression;
+    }
+
+    ++index;
+  }
+
+  if (literals.raw[index].length) {
+    yield literals.raw[index];
+  }
+};
+
+export { html, htmlGenerator };
