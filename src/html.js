@@ -92,9 +92,11 @@ const htmlGenerator = function* (literals, ...expressions) {
                   : `${value}`;
 
           if (expression.length) {
-            yield isRaw
-              ? expression
-              : expression.replace(escapeRegExp, escapeFunction);
+            if (!isRaw) {
+              expression = expression.replace(escapeRegExp, escapeFunction);
+            }
+
+            yield expression;
           }
         }
 
