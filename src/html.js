@@ -83,7 +83,14 @@ const htmlGenerator = function* (literals, ...expressions) {
         }
 
         for (const value of expressions[index]) {
-          expression = typeof value === "string" ? value : `${value ?? ""}`;
+          expression =
+            typeof value === "string"
+              ? value
+              : value == null
+                ? ""
+                : Array.isArray(value)
+                  ? value.join("")
+                  : `${value}`;
 
           if (expression.length) {
             yield isRaw
