@@ -107,10 +107,10 @@ test("renders multiple html calls with different expression types", () => {
 });
 
 test("htmlGenerator renders safe content", () => {
-  const generator = htmlGenerator`<p>${descriptionSafe}!${descriptionSafe}!${htmlGenerator`${array1}`}!${null}${255}</p>`;
+  const generator = htmlGenerator`<p>${descriptionSafe}!${descriptionSafe}G!${htmlGenerator`${array1}`}!${null}${255}</p>`;
   assert.strictEqual(generator.next().value, "<p>This is a safe description.");
   assert.strictEqual(generator.next().value, "This is a safe description.");
-  assert.strictEqual(generator.next().value, "");
+  assert.strictEqual(generator.next().value, "G");
   assert.strictEqual(generator.next().value, "12345");
   assert.strictEqual(generator.next().value, "255");
   assert.strictEqual(generator.next().value, "</p>");

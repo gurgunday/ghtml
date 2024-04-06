@@ -74,8 +74,12 @@ const htmlGenerator = function* (literals, ...expressions) {
         const isRaw =
           literal.length > 0 && literal.charCodeAt(literal.length - 1) === 33;
 
+        if (isRaw) {
+          literal = literal.slice(0, -1);
+        }
+
         if (literal.length) {
-          yield isRaw ? literal.slice(0, -1) : literal;
+          yield literal;
         }
 
         for (const value of expressions[index]) {
