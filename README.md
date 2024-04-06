@@ -16,11 +16,11 @@ The `html` function is used to tag template literals and escape their expression
 
 ### `htmlGenerator`
 
-The `htmlGenerator` function is a generator version of the `html` function. It allows for the generation of HTML fragments in a streaming manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
+The `htmlGenerator` function is the generator version of the `html` function. It allows for the generation of HTML fragments in a streaming manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
 
 ### `includeFile`
 
-Available for Node.js users, the `includeFile` function reads and outputs the content of a file, caching it in memory for future reuse.
+Available for Node.js users, the `includeFile` function reads and outputs the content of a file, while also caching it in memory for future reuse.
 
 ## Usage
 
@@ -52,14 +52,14 @@ console.log(container);
 import { htmlGenerator as html } from "ghtml";
 import { Readable } from "node:stream";
 
-const generateHtmlContent = html`<html>
-  <p>...your HTML content...</p>
+const htmlContent = html`<html>
+  <p>${"...your HTML content..."}</p>
 </html>`;
 
-const readableStream = Readable.from(generateHtmlContent);
+const readableStream = Readable.from(htmlContent);
 
 http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/html" });
+  res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
   readableStream.pipe(res);
 });
 ```
