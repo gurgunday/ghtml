@@ -45,9 +45,7 @@ const html = (literals, ...expressions) => {
     ++index;
   }
 
-  accumulator += literals.raw[index];
-
-  return accumulator;
+  return (accumulator += literals.raw[index]);
 };
 
 /**
