@@ -10,11 +10,21 @@ npm i ghtml
 
 ## API Reference
 
-The main export of the package is the `html` function that can be used to tag template literals and escape their expressions. To bypass escaping an expression, prefix it with `!`.
+### `html`
 
-Node.js users also have access to the `includeFile` function that reads and outputs the content of a file while caching it in memory for future use.
+The `html` function is used to tag template literals and escape their expressions. To bypass escaping an expression, prefix it with `!`.
+
+### `htmlGenerator`
+
+The `htmlGenerator` function is the generator version of the `html` function. It allows for the generation of HTML fragments in a streaming manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
+
+### `includeFile`
+
+Available for Node.js users, the `includeFile` function is a wrapper around `readFileSync`. It reads and outputs the content of a file while also caching it in memory for faster future reuse.
 
 ## Usage
+
+### `html`
 
 ```js
 import { html } from "ghtml";
@@ -24,7 +34,11 @@ const greeting = html`<h1>Hello, ${username}!</h1>`;
 
 console.log(greeting);
 // Output: <h1>Hello, &lt;img src=&quot;https://example.com/hacker.png&quot;&gt;</h1>
+```
 
+To bypass escaping:
+
+```js
 const img = '<img src="https://example.com/safe.png">';
 const container = html`<div>!${img}</div>`;
 
@@ -32,7 +46,51 @@ console.log(container);
 // Output: <div><img src="https://example.com/safe.png"></div>
 ```
 
-The `includeFile` function returns the content of a file. Again, remember that it also caches the result, so any subsequent modifications to the same file won't be reflected until the app is restarted:
+When nesting multiple `html` expressions, always use `!` as they will do their own escaping:
+
+```js
+const someCondition = Math.random() >= 0.5;
+const data = {
+  username: "John",
+  age: 21,
+};
+
+const htmlString = html`
+  <div>
+    !${someCondition
+      ? html`
+          <p>Data:</p>
+          <ul>
+            ${Object.values(data).map(
+              ([key, val]) => `
+                ${key}: ${val}
+              `,
+            )}
+          </ul>
+        `
+      : "<p>No data...</p>"}
+  </div>
+`;
+```
+
+### `htmlGenerator`
+
+```js
+import { htmlGenerator as html } from "ghtml";
+import { Readable } from "node:stream";
+
+const htmlContent = html`<html>
+  <p>${"...your HTML content..."}</p>
+</html>`;
+const readableStream = Readable.from(htmlContent);
+
+http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+  readableStream.pipe(res);
+});
+```
+
+### `includeFile`
 
 ```js
 import { includeFile } from "ghtml/includeFile.js";
