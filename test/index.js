@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { html, htmlGenerator } from "../src/index.js";
+import { html, htmlGenerator } from "../src/html.js";
 
 const username = "Paul";
 const descriptionSafe = "This is a safe description.";
