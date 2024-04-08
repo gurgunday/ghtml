@@ -44,9 +44,7 @@ const html = (literals, ...expressions) => {
     accumulator += literal + expression;
   }
 
-  accumulator += literals.raw[index];
-
-  return accumulator;
+  return (accumulator += literals.raw[index]);
 };
 
 /**
