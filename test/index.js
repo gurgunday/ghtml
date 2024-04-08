@@ -2,14 +2,13 @@ import test from "node:test";
 import assert from "node:assert";
 import { html, htmlGenerator } from "../src/index.js";
 
+const conditionTrue = true;
+const conditionFalse = false;
 const username = "Paul";
 const descriptionSafe = "This is a safe description.";
 const descriptionUnsafe =
   "<script>alert('This is an unsafe description.')</script>";
 const array1 = [1, 2, 3, 4, 5];
-const conditionTrue = true;
-const conditionFalse = false;
-const emptyString = "";
 
 const generatorExample = function* () {
   yield "<p>";
@@ -26,7 +25,7 @@ test("renders empty input", () => {
 });
 
 test("renders empty input", () => {
-  assert.strictEqual(html`${emptyString}`, "");
+  assert.strictEqual(html`${""}`, "");
 });
 
 test("renders normal input", () => {
@@ -40,7 +39,7 @@ test("renders safe content", () => {
   );
 });
 
-test("escapes unsafe content", () => {
+test("renders unsafe content", () => {
   assert.strictEqual(
     html`<p>${descriptionUnsafe}</p>`,
     `<p>&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;</p>`,
@@ -54,14 +53,14 @@ test("renders arrays", () => {
   );
 });
 
-test("bypass escaping", () => {
+test("bypasses escaping", () => {
   assert.strictEqual(
     html`<p>!${[descriptionSafe, descriptionUnsafe]}</p>`,
     "<p>This is a safe description.<script>alert('This is an unsafe description.')</script></p>",
   );
 });
 
-test("renders wrapped html calls", () => {
+test("renders nested html calls", () => {
   // prettier-ignore
   assert.strictEqual(
     html`<p>!${conditionTrue ? html`<strong>${descriptionUnsafe}</strong>` : ""}</p>`,
@@ -117,17 +116,20 @@ test("renders multiple html calls with different expression types", () => {
 });
 
 test("htmlGenerator renders safe content", () => {
-  const generator = htmlGenerator`<p>${descriptionSafe}!${descriptionSafe}G!${htmlGenerator`${array1}`}!${null}${255}</p>`;
-  assert.strictEqual(generator.next().value, "<p>This is a safe description.");
-  assert.strictEqual(generator.next().value, "This is a safe description.");
-  assert.strictEqual(generator.next().value, "G");
-  assert.strictEqual(generator.next().value, "12345");
-  assert.strictEqual(generator.next().value, "255");
-  assert.strictEqual(generator.next().value, "</p>");
-  assert.strictEqual(generator.next().done, true);
+  const generator = htmlGenerator`<p>${descriptionSafe}!${descriptionUnsafe}G!${htmlGenerator`${array1}`}!${null}${255}</p>`;
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<p>This is a safe description.<script>alert('This is an unsafe description.')</script>G12345255</p>",
+  );
 });
 
-test("htmlGenerator escapes unsafe content", () => {
+test("htmlGenerator renders unsafe content", () => {
   const generator = htmlGenerator`<p>${descriptionUnsafe}${descriptionUnsafe}${htmlGenerator`${array1}`}${null}${255}</p>`;
   assert.strictEqual(
     generator.next().value,
