@@ -24,7 +24,7 @@ const html = (literals, ...expressions) => {
   let accumulator = "";
   let index = 0;
 
-  while (index < expressions.length) {
+  for (; index < expressions.length; ++index) {
     let literal = literals.raw[index];
     let expression =
       typeof expressions[index] === "string"
@@ -42,7 +42,6 @@ const html = (literals, ...expressions) => {
     }
 
     accumulator += literal + expression;
-    ++index;
   }
 
   return (accumulator += literals.raw[index]);
@@ -56,7 +55,7 @@ const html = (literals, ...expressions) => {
 const htmlGenerator = function* (literals, ...expressions) {
   let index = 0;
 
-  while (index < expressions.length) {
+  for (; index < expressions.length; ++index) {
     let literal = literals.raw[index];
     let expression;
 
@@ -98,7 +97,6 @@ const htmlGenerator = function* (literals, ...expressions) {
           }
         }
 
-        ++index;
         continue;
       }
 
@@ -114,8 +112,6 @@ const htmlGenerator = function* (literals, ...expressions) {
     if (literal.length || expression.length) {
       yield literal + expression;
     }
-
-    ++index;
   }
 
   if (literals.raw[index].length) {
