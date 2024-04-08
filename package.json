@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
-    "grules": "^0.13.0"
+    "grules": "^0.14.1"
   },
   "repository": {
     "type": "git",
