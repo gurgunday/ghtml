@@ -72,7 +72,7 @@ jobs:
             const mainResults = JSON.parse(Buffer.from(process.env.MAIN_RESULTS, 'base64').toString('utf8'));
 
             const commentBody = `
-              Benchmark Results Comparison:
+              Benchmark Results Comparison (${context.sha}):
 
               **PR Branch:**
               \`\`\`json
