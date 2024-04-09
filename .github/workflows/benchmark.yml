@@ -37,8 +37,6 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const results = `${{ env.RESULTS }}`;
-            const resultsObj = JSON.parse(results);
-            const resultsFormatted = JSON.stringify(resultsObj, null, 2);
 
             const pullRequestNumber = context.issue.number;
             const commitSha = context.sha;
@@ -47,5 +45,5 @@ jobs:
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Benchmark Results for Commit: ${commitSha}\n\`\`\`json\n${results}\n\`\`\``
+              body: `Benchmark results for commit: ${commitSha}\n\`\`\`json\n${results}\n\`\`\``
             });
