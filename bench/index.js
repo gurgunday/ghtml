@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { html } from "../src/html.js";
 import { Bench } from "tinybench";
-import process from "node:process";
 
 const bench = new Bench({ time: 1000 });
 
@@ -90,4 +89,4 @@ bench.add('Escaping avoided with "!"', () => {
 await bench.warmup();
 await bench.run();
 
-process.stdout.write(JSON.stringify(bench.table()));
+console.table(bench.table());

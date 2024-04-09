@@ -34,12 +34,10 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const results = ${{ steps.run_benchmark.outputs.results }};
-            const resultsObject = JSON.parse(results);
-            const formattedResults = JSON.stringify(resultsObject, null, 2);
             const pullRequestNumber = context.issue.number;
             github.rest.issues.createComment({
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Benchmark Results:\n\`\`\`json\n${formattedResults}\n\`\`\``
+              body: `Benchmark Results:\n\`\`\`bash\n${formattedResults}\n\`\`\``
             });
