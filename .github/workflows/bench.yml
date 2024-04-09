@@ -1,0 +1,43 @@
+name: Benchmark
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run benchmark
+        run: node bench/index.js
+
+      - name: Read benchmark results
+        id: read_results
+        run: echo "::set-output name=results::$(cat bench/results.json)"
+        shell: bash
+
+      - name: Comment PR with benchmark result
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.ACTION}}
+          script: |
+            const output = `${{ steps.read_results.outputs.results }}`;
+            const pullRequestNumber = context.issue.number;
+            github.issues.createComment({
+              issue_number: pullRequestNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Benchmark Results:\n\`\`\`json\n${output}\n\`\`\``
+            });
