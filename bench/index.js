@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { html } from "../src/html.js";
 import { Bench } from "tinybench";
+import { writeFileSync } from "node:fs";
 
 const bench = new Bench({ time: 1000 });
 
@@ -89,4 +90,4 @@ bench.add('Escaping avoided with "!"', () => {
 await bench.warmup();
 await bench.run();
 
-console.table(bench.table());
+writeFileSync("bench/results.json", JSON.stringify(bench.results, null, 2));

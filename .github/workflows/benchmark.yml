@@ -24,12 +24,7 @@ jobs:
         run: npm install
 
       - name: Run benchmark and capture results
-        run: |
-          {
-            echo 'RESULTS<<EOF'
-            $(node bench/index.js)
-            echo EOF
-          } >> "$GITHUB_ENV"
+        run: echo "{RESULTS}={$(cat bench/results.json)}" >> "$GITHUB_ENV"
 
       - name: Comment PR with benchmark result
         uses: actions/github-script@v7
@@ -37,10 +32,12 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const results = ${{ env.RESULTS }};
+            const resultsObject = JSON.parse(results);
+            const formattedResults = JSON.stringify(resultsObject, null, 2);
             const pullRequestNumber = context.issue.number;
             github.rest.issues.createComment({
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Benchmark Results:\n\`\`\`bash\n${results}\n\`\`\``
+              body: `Benchmark Results:\n\`\`\`json\n${formattedResults}\n\`\`\``
             });
