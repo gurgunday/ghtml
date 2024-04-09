@@ -71,7 +71,7 @@ bench.add("High iteration count", () => {
 // Unescaped expressions with "!"
 bench.add("Unescaped expressions", () => {
   const rawHTML = "<em>Italic</em> and <strong>bold</strong>";
-  html`<div>!${rawHTML}</div>`; // Assuming !${exp} is the syntax for unescaped expressions in your implementation
+  html`<div>!${rawHTML}</div>`;
 });
 
 // Handling script tags without execution (Safe innerHTML)
@@ -84,7 +84,7 @@ bench.add("Script tags without execution", () => {
 // Escaping is avoided (demonstration with "!")
 bench.add('Escaping avoided with "!"', () => {
   const markup = "<mark>Highlighted</mark>";
-  html`<div>!${markup}</div>`; // Note: This test assumes your html function supports ! for raw HTML
+  html`<div>!${markup}</div>`;
 });
 
 await bench.warmup();
