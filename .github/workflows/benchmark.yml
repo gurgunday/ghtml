@@ -36,6 +36,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const results = `${{ env.RESULTS }}`;
+            const pullRequestNumber = context.issue.number;
             github.rest.issues.createComment({
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
