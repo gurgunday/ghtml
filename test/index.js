@@ -1,4 +1,3 @@
-// eslint-disable-next-line n/no-missing-import
 import test from "node:test";
 import assert from "node:assert";
 import { html, htmlGenerator } from "../src/html.js";
