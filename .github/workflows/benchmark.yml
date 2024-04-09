@@ -38,7 +38,7 @@ jobs:
 
       # Prepare for main branch benchmark
       - name: Backup PR src directory
-        run: mkdir _pr && mv src _pr/src
+        run: mkdir _pr_branch && mv src _pr_branch/src
 
       # Checkout main branch src directory
       - name: Checkout main branch src directory
