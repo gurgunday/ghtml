@@ -23,7 +23,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run benchmark and capture results
+      - name: Run benchmark
+        run: node bench/index.js
+
+      - name: Read benchmark results
         run: echo "{RESULTS}={$(cat bench/results.json)}" >> "$GITHUB_ENV"
 
       - name: Comment PR with benchmark result
