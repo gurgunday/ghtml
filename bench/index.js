@@ -91,4 +91,4 @@ await bench.warmup();
 await bench.run();
 
 console.table(bench.table());
-writeFileSync("bench/results.json", JSON.stringify(bench.table()));
+writeFileSync("bench/results.json", JSON.stringify(bench.table(), null, 2));

@@ -26,9 +26,11 @@ jobs:
       - name: Run benchmark
         run: node bench/index.js
 
-      - name: Read benchmark results
+      - name: Read benchmark results and encode to Base64
         id: read_results
-        run: echo "::set-output name=results::$(cat bench/results.json)"
+        run: |
+          RESULT=$(cat bench/results.json | base64)
+          echo "::set-output name=results::$RESULT"
         shell: bash
 
       - name: Comment PR with benchmark result
@@ -36,11 +38,12 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const output = `${{ steps.read_results.outputs.results }}`;
+            const base64Content = `${{ steps.read_results.outputs.results }}`;
+            const decodedContent = Buffer.from(base64Content, 'base64').toString('utf-8');
             const pullRequestNumber = context.issue.number;
             github.rest.issues.createComment({
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Benchmark Results:\n\`\`\`json\n${output}\n\`\`\``
+              body: `Benchmark Results:\n\`\`\`json\n${decodedContent}\n\`\`\``
             });
