@@ -90,4 +90,4 @@ bench.add('Escaping avoided with "!"', () => {
 await bench.warmup();
 await bench.run();
 
-writeFileSync("bench/results.json", JSON.stringify(bench.table(), null, 2));
+writeFileSync("bench/results.json", JSON.stringify(bench.table()));
