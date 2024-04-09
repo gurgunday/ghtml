@@ -36,7 +36,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const results = ${{ env.RESULTS }};
+            const results = `${{ env.RESULTS }}`;
             const resultsObject = JSON.parse(results);
             const formattedResults = JSON.stringify(resultsObject, null, 2);
             const pullRequestNumber = context.issue.number;
