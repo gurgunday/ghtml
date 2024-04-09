@@ -33,8 +33,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            let results = ${{ steps.run_benchmark.outputs.results }};
-            results = results.replaceAll("{", "\n{");
+            const results = ${{ steps.run_benchmark.outputs.results }};
             const pullRequestNumber = context.issue.number;
             github.rest.issues.createComment({
               issue_number: pullRequestNumber,
