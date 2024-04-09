@@ -68,8 +68,8 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const prResults = JSON.parse(process.env.PR_RESULTS);
-            const mainResults = JSON.parse(process.env.MAIN_RESULTS);
+            const prResults = JSON.parse(Buffer.from(process.env.PR_RESULTS, 'base64').toString('utf8'));
+            const mainResults = JSON.parse(Buffer.from(process.env.MAIN_RESULTS, 'base64').toString('utf8'));
 
             const commentBody = `
               Benchmark Results Comparison:
