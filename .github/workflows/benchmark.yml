@@ -38,20 +38,20 @@ jobs:
 
       # Prepare for main branch benchmark
       - name: Backup PR src directory
-        run: mv src src_pr
+        run: mv src _pr/src
 
       # Checkout main branch src directory
       - name: Checkout main branch src directory
         uses: actions/checkout@v4
         with:
           ref: "main"
-          path: "main_branch"
+          path: "_main_branch"
 
       # Replace PR src with main src
       - name: Replace PR src with main src
         run: |
           rm -rf src
-          cp -R main_branch/src src
+          cp -R _main_branch/src src
 
       # Run benchmark on main branch src with PR's benchmark tooling
       - name: Run benchmark on main branch src
