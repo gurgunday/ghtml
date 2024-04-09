@@ -31,7 +31,7 @@ jobs:
       - name: Comment PR with benchmark result
         uses: actions/github-script@v7
         with:
-          github-token: ${{secrets.ACTION}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const output = `${{ steps.read_results.outputs.results }}`;
             const pullRequestNumber = context.issue.number;
