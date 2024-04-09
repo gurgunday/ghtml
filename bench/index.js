@@ -2,6 +2,7 @@
 import { html } from "../src/html.js";
 import { Bench } from "tinybench";
 import { writeFileSync } from "node:fs";
+import { Buffer } from "node:buffer";
 
 const bench = new Bench({ time: 1000 });
 
@@ -90,4 +91,9 @@ bench.add("Escaping avoided with !", () => {
 await bench.warmup();
 await bench.run();
 
-writeFileSync("bench/results.json", JSON.stringify(bench.table()));
+const result = JSON.stringify(bench.table());
+
+writeFileSync(
+  "bench/results.json",
+  Buffer.from(result, "utf8").toString("base64"),
+);
