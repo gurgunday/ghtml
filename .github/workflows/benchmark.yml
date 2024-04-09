@@ -39,7 +39,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const base64Content = `${{ steps.read_results.outputs.results }}`;
-            const decodedContent = Buffer.from(base64Content, 'base64').toString('utf-8');
+            const decodedContent = Buffer.from(base64Content, 'base64').toString('utf8');
             const pullRequestNumber = context.issue.number;
             github.rest.issues.createComment({
               issue_number: pullRequestNumber,
