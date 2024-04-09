@@ -13,7 +13,7 @@ jobs:
   benchmark:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout PR code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -21,32 +21,63 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
+      - name: Install dependencies for PR
         run: npm install
 
-      - name: Run benchmark
+      - name: Run benchmark for PR
         run: node bench/index.js
 
-      - name: Read benchmark results
-        run: echo "RESULTS=$(cat bench/results.json)" >> "$GITHUB_ENV"
-        shell: bash
+      - name: Save PR benchmark results
+        run: cp bench/results.json pr-results.json
 
-      - name: Comment PR with benchmark result
+      - name: Checkout main branch code
+        uses: actions/checkout@v4
+        with:
+          ref: "main"
+          path: "main_branch"
+
+      - name: Setup Node.js for main branch
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          working-directory: "./main_branch"
+
+      - name: Install dependencies for main branch
+        run: npm install
+        working-directory: "./main_branch"
+
+      - name: Run benchmark for main branch
+        run: node bench/index.js
+        working-directory: "./main_branch"
+
+      - name: Save main benchmark results
+        run: cp main_branch/bench/results.json main-results.json
+
+      - name: Compare and comment on PR with benchmark results
         uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const results = `${{ env.RESULTS }}`;
-            const resultsUtf8 = Buffer.from(results, 'base64').toString('utf8');
-            const resultsObject = JSON.parse(resultsUtf8);
-            const resultsFormatted = JSON.stringify(resultsObject, null, 2);
+            const fs = require('fs');
+            const prResults = JSON.parse(fs.readFileSync('pr-results.json', 'utf8'));
+            const mainResults = JSON.parse(fs.readFileSync('main-results.json', 'utf8'));
 
-            const pullRequestNumber = context.issue.number;
-            const commitSha = context.sha;
+            const resultsComment = `
+              Benchmark Results:
+              **PR Branch:**
+              \`\`\`json
+              ${JSON.stringify(prResults, null, 2)}
+              \`\`\`
 
-            github.rest.issues.createComment({
-              issue_number: pullRequestNumber,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Benchmark results for commit: ${commitSha}\n\`\`\`json\n${resultsFormatted}\n\`\`\``
-            });
+              **Main Branch:**
+              \`\`\`json
+              ${JSON.stringify(mainResults, null, 2)}
+              \`\`\`
+              `;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: resultsComment
+              });
