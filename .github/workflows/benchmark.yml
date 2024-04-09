@@ -35,7 +35,7 @@ jobs:
           script: |
             const output = `${{ steps.read_results.outputs.results }}`;
             const pullRequestNumber = context.issue.number;
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
