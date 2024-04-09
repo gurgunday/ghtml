@@ -82,7 +82,7 @@ bench.add("Script tags without execution", () => {
 });
 
 // Escaping is avoided (demonstration with "!")
-bench.add("Escaping avoided with `!`", () => {
+bench.add("Escaping avoided with !", () => {
   const markup = "<mark>Highlighted</mark>";
   html`<div>!${markup}</div>`;
 });
