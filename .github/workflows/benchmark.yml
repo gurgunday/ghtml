@@ -24,7 +24,6 @@ jobs:
         run: npm install
 
       - name: Run benchmark and capture results
-        id: run_benchmark
         run: |
           {
             echo 'RESULTS<<EOF'
@@ -43,5 +42,5 @@ jobs:
               issue_number: pullRequestNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Benchmark Results:\n\`\`\`bash\n${formattedResults}\n\`\`\``
+              body: `Benchmark Results:\n\`\`\`bash\n${results}\n\`\`\``
             });
