@@ -61,10 +61,8 @@ const htmlString = html`
       ? html`
           <p>Data:</p>
           <ul>
-            ${Object.values(data).map(
-              ([key, val]) => `
-                ${key}: ${val}
-              `,
+            !${Object.values(data).map(
+              ([key, val]) => html`<li>${key}: ${val}</li>`,
             )}
           </ul>
         `
