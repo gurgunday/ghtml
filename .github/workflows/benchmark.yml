@@ -29,14 +29,13 @@ jobs:
 
       - name: Read benchmark results
         run: echo "{RESULTS}={$(cat bench/results.json)}" >> "$GITHUB_ENV"
-        shell: bash
 
       - name: Comment PR with benchmark result
         uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const results = `${{ env.RESULTS }}`;
+            const results = process.env.RESULTS;
             const resultsObject = JSON.parse(results);
             const formattedResults = JSON.stringify(resultsObject, null, 2);
             const pullRequestNumber = context.issue.number;
