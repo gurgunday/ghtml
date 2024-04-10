@@ -41,7 +41,7 @@ bench.add("Arrays and iteration", () => {
 });
 
 const items2 = ["Item 1", undefined, "Item 2", null, 2000];
-bench.add("// Arrays and iteration with multiple types", () => {
+bench.add("Arrays and iteration with multiple types", () => {
   html`<ul>
     ${items2.map((item) => {
       return html`<li>${item}</li>`;
