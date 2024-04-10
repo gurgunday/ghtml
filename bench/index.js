@@ -4,39 +4,33 @@ import { Bench } from "tinybench";
 import { writeFileSync } from "node:fs";
 import { Buffer } from "node:buffer";
 
-const bench = new Bench({ time: 1000 });
+const bench = new Bench({ time: 500 });
 
-// Simple rendering
-bench.add("Simple rendering", () => {
+bench.add("Simple formatting", () => {
   html`<div>Hello, world!</div>`;
 });
 
-// Escaping characters
-bench.add("Escaping characters", () => {
-  const title = 'Quote: "Innovation"';
-  html`<div title="${title}">Hello, world!</div>`;
-});
-
-// Using variables
 const username = "User";
-bench.add("Using variables", () => {
+bench.add("Using string variable", () => {
   html`<p>${username}</p>`;
 });
 
-// Handling null and undefined
+const value = null;
+const undef = undefined;
 bench.add("Handling null and undefined", () => {
-  const value = null;
-  const undef = undefined;
   html`<p>${value} and ${undef}</p>`;
 });
 
-// Nested templates
-bench.add("Nested templates", () => {
-  const user = { id: 1, name: "John Doe" };
-  html`<div>User: ${html`<span>${user.name}</span>`}</div>`;
+const user = { id: 1, name: "John Doe" };
+bench.add("Multiple types of expressions", () => {
+  html`
+    ${undefined}
+    <div>User: <span>${user.name}</span></div>
+    <div>Id: <span>${user.id}</span></div>
+    ${null}
+  `;
 });
 
-// Arrays and iteration
 const items = ["Item 1", "Item 2", "Item 3"];
 bench.add("Arrays and iteration", () => {
   html`<ul>
@@ -46,8 +40,16 @@ bench.add("Arrays and iteration", () => {
   </ul>`;
 });
 
-// Complex expressions
-bench.add("Complex expressions", () => {
+const items2 = ["Item 1", undefined, "Item 2", null, 2000];
+bench.add("// Arrays and iteration with multiple types", () => {
+  html`<ul>
+    ${items2.map((item) => {
+      return html`<li>${item}</li>`;
+    })}
+  </ul>`;
+});
+
+bench.add("Complex/nested expressions", () => {
   const loggedIn = true;
   html`<nav>
     ${loggedIn
@@ -56,42 +58,35 @@ bench.add("Complex expressions", () => {
   </nav>`;
 });
 
-// Large strings
 const largeString = Array.from({ length: 1000 }).join("Lorem ipsum ");
 bench.add("Large strings", () => {
   html`<p>${largeString}</p>`;
 });
 
-// High iteration count
 bench.add("High iteration count", () => {
   for (let i = 0; i < 1000; i++) {
     html`<span>${i}</span>`;
   }
 });
 
-// Handling script tags without execution
-bench.add("Script tags without execution", () => {
-  const scriptContent =
-    "<script>console.log('This should not execute');</script>";
-  html`<div>${scriptContent}</div>`;
+const scriptContent =
+  "<script>console.log('This should not execute');</script>";
+bench.add("Escape HTML", () => {
+  html`<div>${scriptContent} ${scriptContent}</div>`;
 });
 
-// Unescaped expressions with "!"
+// Render raw HTML
+const rawHTML = "<em>Italic</em> and <strong>bold</strong>";
+const markup = "<mark>Highlighted</mark>";
 bench.add("Unescaped expressions", () => {
-  const rawHTML = "<em>Italic</em> and <strong>bold</strong>";
   html`
     <div>!${rawHTML}</div>
     <div>!${rawHTML}</div>
-    <div>!${rawHTML}</div>
+    <div>!${markup}</div>
+    <div>!${markup}</div>
     <div>!${rawHTML}</div>
     <div>!${rawHTML}</div>
   `;
-});
-
-// Escaping is avoided (demonstration with "!")
-bench.add("Escaping avoided with !", () => {
-  const markup = "<mark>Highlighted</mark>";
-  html`<div>!${markup}</div>`;
 });
 
 await bench.warmup();
