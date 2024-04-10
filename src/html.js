@@ -20,12 +20,12 @@ const escapeFunction = (key) => {
  * @param {...any} expressions Expressions to interpolate.
  * @returns {string} The HTML string.
  */
-const html = (literals, ...expressions) => {
+const html = ({ raw: literals }, ...expressions) => {
   let accumulator = "";
   let index = 0;
 
   for (; index < expressions.length; ++index) {
-    let literal = literals.raw[index];
+    let literal = literals[index];
     let expression =
       typeof expressions[index] === "string"
         ? expressions[index]
@@ -44,7 +44,7 @@ const html = (literals, ...expressions) => {
     accumulator += literal + expression;
   }
 
-  return (accumulator += literals.raw[index]);
+  return (accumulator += literals[index]);
 };
 
 /**
@@ -52,11 +52,11 @@ const html = (literals, ...expressions) => {
  * @param {...any} expressions Expressions to interpolate.
  * @yields {string} The HTML strings.
  */
-const htmlGenerator = function* (literals, ...expressions) {
+const htmlGenerator = function* ({ raw: literals }, ...expressions) {
   let index = 0;
 
   for (; index < expressions.length; ++index) {
-    let literal = literals.raw[index];
+    let literal = literals[index];
     let expression;
 
     if (typeof expressions[index] === "string") {
@@ -114,8 +114,8 @@ const htmlGenerator = function* (literals, ...expressions) {
     }
   }
 
-  if (literals.raw[index].length) {
-    yield literals.raw[index];
+  if (literals[index].length) {
+    yield literals[index];
   }
 };
 
