@@ -69,17 +69,23 @@ bench.add("High iteration count", () => {
   }
 });
 
-// Unescaped expressions with "!"
-bench.add("Unescaped expressions", () => {
-  const rawHTML = "<em>Italic</em> and <strong>bold</strong>";
-  html`<div>!${rawHTML}</div>`;
-});
-
-// Handling script tags without execution (Safe innerHTML)
+// Handling script tags without execution
 bench.add("Script tags without execution", () => {
   const scriptContent =
     "<script>console.log('This should not execute');</script>";
   html`<div>${scriptContent}</div>`;
+});
+
+// Unescaped expressions with "!"
+bench.add("Unescaped expressions", () => {
+  const rawHTML = "<em>Italic</em> and <strong>bold</strong>";
+  html`
+    <div>!${rawHTML}</div>
+    <div>!${rawHTML}</div>
+    <div>!${rawHTML}</div>
+    <div>!${rawHTML}</div>
+    <div>!${rawHTML}</div>
+  `;
 });
 
 // Escaping is avoided (demonstration with "!")
@@ -91,9 +97,10 @@ bench.add("Escaping avoided with !", () => {
 await bench.warmup();
 await bench.run();
 
-const result = JSON.stringify(bench.table());
+const table = bench.table();
+console.table(table);
 
 writeFileSync(
   "bench/results.json",
-  Buffer.from(result, "utf8").toString("base64"),
+  Buffer.from(JSON.stringify(table), "utf8").toString("base64"),
 );
