@@ -32,6 +32,10 @@ test("renders normal input", () => {
   assert.strictEqual(html`Hey, ${username}!`, `Hey, ${username}!`);
 });
 
+test("renders undefined and null as empty string", () => {
+  assert.strictEqual(html`<p>${null}${undefined}</p>`, "<p></p>");
+});
+
 test("renders safe content", () => {
   assert.strictEqual(
     html`<p>${descriptionSafe}</p>`,
