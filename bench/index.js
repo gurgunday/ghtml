@@ -49,8 +49,8 @@ bench.add("// Arrays and iteration with multiple types", () => {
   </ul>`;
 });
 
+const loggedIn = true;
 bench.add("Complex/nested expressions", () => {
-  const loggedIn = true;
   html`<nav>
     ${loggedIn
       ? html`<a href="/logout">Logout</a>`
