@@ -1,6 +1,6 @@
+import { html, htmlGenerator } from "../src/index.js";
 import test from "node:test";
 import assert from "node:assert";
-import { html, htmlGenerator } from "../src/html.js";
 
 const conditionTrue = true;
 const conditionFalse = false;
