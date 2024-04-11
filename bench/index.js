@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { html } from "../src/html.js";
+import { html } from "../src/index.js";
 import { Bench } from "tinybench";
 import { writeFileSync } from "node:fs";
 import { Buffer } from "node:buffer";
