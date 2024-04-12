@@ -24,7 +24,7 @@ const html = ({ raw: literals }, ...expressions) => {
   let accumulator = "";
   let index = 0;
 
-  for (; index < expressions.length; ++index) {
+  for (; index !== expressions.length; ++index) {
     let literal = literals[index];
     let expression =
       typeof expressions[index] === "string"
@@ -55,7 +55,7 @@ const html = ({ raw: literals }, ...expressions) => {
 const htmlGenerator = function* ({ raw: literals }, ...expressions) {
   let index = 0;
 
-  for (; index < expressions.length; ++index) {
+  for (; index !== expressions.length; ++index) {
     let literal = literals[index];
     let expression;
 

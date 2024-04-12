@@ -64,7 +64,7 @@ bench.add("Large strings", () => {
 });
 
 bench.add("High iteration count", () => {
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i !== 1000; i++) {
     html`<span>${i}</span>`;
   }
 });
