@@ -79,14 +79,16 @@ const htmlString = html`
 import { htmlGenerator as html } from "ghtml";
 import { Readable } from "node:stream";
 
-http.createServer((req, res) => {
-  const htmlContent = html`<html>
+http
+  .createServer((req, res) => {
+    const htmlContent = htmlGenerator`<html>
     <p>${"...HTML content..."}</p>
   </html>`;
-  const readableStream = Readable.from(htmlContent);
-  res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-  readableStream.pipe(res);
-});
+    const readableStream = Readable.from(htmlContent);
+    res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+    readableStream.pipe(res);
+  })
+  .listen(3000);
 ```
 
 ### `includeFile`
