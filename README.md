@@ -16,7 +16,9 @@ The `html` function is used to tag template literals and escape their expression
 
 ### `htmlGenerator`
 
-The `htmlGenerator` function is the generator version of the `html` function. It allows for the generation of HTML fragments in a streaming manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
+The `htmlGenerator` function is the generator version of the `html` function. It allows for the generation of HTML fragments in an iterative manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
+
+**Note:** It is important to note that, to be able to detect nested `htmlGenerator` usage, this function also checks if elements of an array expression are iterable as well and handles them accordingly. So an expression like `${[[1, 2, 3], 4]}` (note how the first element is an array itself) would be rendered as `"1,2,34"` with `html`, but as `"1234"` with `htmlGenerator`.
 
 ### `includeFile`
 
