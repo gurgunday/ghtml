@@ -147,7 +147,7 @@ test("htmlGenerator renders unsafe content", () => {
   );
 });
 
-test("htmlGenerator works with nested htmlGenerator calls", () => {
+test("htmlGenerator works with nested htmlGenerator calls in an array", () => {
   const generator = htmlGenerator`<ul>!${[1, 2, 3].map((index) => {
     return htmlGenerator`<li>${index}</li>`;
   })}</ul>`;
