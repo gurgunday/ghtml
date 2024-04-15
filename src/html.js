@@ -85,14 +85,10 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
             expression = "";
 
             for (const innerValue of value) {
-              expression +=
-                typeof innerValue === "string"
-                  ? innerValue
-                  : innerValue == null
-                    ? ""
-                    : Array.isArray(innerValue)
-                      ? innerValue.join("")
-                      : `${innerValue}`;
+              if (innerValue != null) {
+                // At this level, we simply mirror Array.prototype.join
+                expression += innerValue;
+              }
             }
           } else {
             expression = `${value}`;
