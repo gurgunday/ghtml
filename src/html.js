@@ -63,8 +63,6 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
       expression = expressions[index];
     } else if (expressions[index] == null) {
       expression = "";
-    } else if (Array.isArray(expressions[index])) {
-      expression = expressions[index].join("");
     } else {
       if (typeof expressions[index][Symbol.iterator] === "function") {
         const isRaw =
@@ -79,14 +77,26 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
         }
 
         for (const value of expressions[index]) {
-          expression =
-            typeof value === "string"
-              ? value
-              : value == null
-                ? ""
-                : Array.isArray(value)
-                  ? value.join("")
-                  : `${value}`;
+          if (typeof value === "string") {
+            expression = value;
+          } else if (value == null) {
+            expression = "";
+          } else if (typeof value[Symbol.iterator] === "function") {
+            expression = "";
+
+            for (const innerValue of value) {
+              expression +=
+                typeof innerValue === "string"
+                  ? innerValue
+                  : innerValue == null
+                    ? ""
+                    : Array.isArray(innerValue)
+                      ? innerValue.join("")
+                      : `${innerValue}`;
+            }
+          } else {
+            expression = `${value}`;
+          }
 
           if (expression.length) {
             if (!isRaw) {
