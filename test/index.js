@@ -147,6 +147,20 @@ test("htmlGenerator renders unsafe content", () => {
   );
 });
 
+test("htmlGenerator works with nested htmlGenerator calls", () => {
+  const generator = htmlGenerator`<ul>!${[1, 2, 3].map((index) => {
+    return htmlGenerator`<li>${index}</li>`;
+  })}</ul>`;
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(accumulator, "<ul><li>1</li><li>2</li><li>3</li></ul>");
+  assert.strictEqual(generator.next().done, true);
+});
+
 test("htmlGenerator works with other generators", () => {
   const generator = htmlGenerator`<div>!${generatorExample()}</div>`;
   assert.strictEqual(generator.next().value, "<div>");
