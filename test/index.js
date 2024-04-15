@@ -134,18 +134,30 @@ test("htmlGenerator renders safe content", () => {
 });
 
 test("htmlGenerator renders unsafe content", () => {
-  const generator = htmlGenerator`<p>${descriptionUnsafe}${descriptionUnsafe}${htmlGenerator`${array1}`}${null}${255}</p>`;
+  const generator = htmlGenerator`<p>${descriptionSafe}${descriptionUnsafe}${htmlGenerator`${array1}`}${null}${255}</p>`;
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "<p>&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;",
+    accumulator,
+    "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255</p>",
   );
-  assert.strictEqual(
-    generator.next().value,
-    "&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;",
-  );
-  assert.strictEqual(generator.next().value, "12345");
-  assert.strictEqual(generator.next().value, "255");
-  assert.strictEqual(generator.next().value, "</p>");
+});
+
+test("htmlGenerator works with nested htmlGenerator calls in an array", () => {
+  const generator = htmlGenerator`<ul>!${[1, 2, 3].map((index) => {
+    return htmlGenerator`<li>${index}</li>`;
+  })}</ul>`;
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(accumulator, "<ul><li>1</li><li>2</li><li>3</li></ul>");
   assert.strictEqual(generator.next().done, true);
 });
 
@@ -161,6 +173,28 @@ test("htmlGenerator works with other generators", () => {
   assert.strictEqual(generator.next().value, "12345");
   assert.strictEqual(generator.next().value, "255");
   assert.strictEqual(generator.next().value, "</p>");
+  assert.strictEqual(generator.next().value, "</div>");
+  assert.strictEqual(generator.next().done, true);
+});
+
+test("htmlGenerator works with other generators within an array (raw)", () => {
+  const generator = htmlGenerator`<div>!${[generatorExample()]}</div>`;
+  assert.strictEqual(generator.next().value, "<div>");
+  assert.strictEqual(
+    generator.next().value,
+    "<p>This is a safe description.<script>alert('This is an unsafe description.')</script>1,2,3,4,5255</p>",
+  );
+  assert.strictEqual(generator.next().value, "</div>");
+  assert.strictEqual(generator.next().done, true);
+});
+
+test("htmlGenerator works with other generators within an array (escaped)", () => {
+  const generator = htmlGenerator`<div>${[generatorExample()]}</div>`;
+  assert.strictEqual(generator.next().value, "<div>");
+  assert.strictEqual(
+    generator.next().value,
+    "&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;1,2,3,4,5255&lt;/p&gt;",
+  );
   assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });

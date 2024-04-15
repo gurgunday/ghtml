@@ -12,11 +12,17 @@ npm i ghtml
 
 ### `html`
 
-The `html` function is used to tag template literals and escape their expressions. To bypass escaping an expression, prefix it with `!`.
+The `html` function is designed to tag template literals and automatically escape their expressions to prevent XSS attacks. To intentionally bypass escaping for a specific expression, prefix it with `!`.
 
 ### `htmlGenerator`
 
-The `htmlGenerator` function is the generator version of the `html` function. It allows for the generation of HTML fragments in a streaming manner, which can be particularly useful for large templates or when generating HTML on-the-fly.
+The `htmlGenerator` function acts as the generator version of the `html` function. It facilitates the creation of HTML fragments iteratively, making it ideal for parsing large templates or constructing HTML content dynamically.
+
+**Note:**
+
+A key difference of `htmlGenerator` is its ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` usage, enabling scenarios such as ``[1,2,3].map(i => htmlGenerator`<li>${i}</li>`)``.
+
+As a side effect, an expression like `${[[1, 2, 3], 4]}` (where an element is an array itself) will not be rendered as `"1,2,34"`, which is the case with `html`, but as `"1234"`. This is the intended behavior most of the time anyway.
 
 ### `includeFile`
 
@@ -77,15 +83,16 @@ const htmlString = html`
 import { htmlGenerator as html } from "ghtml";
 import { Readable } from "node:stream";
 
-const htmlContent = html`<html>
-  <p>${"...your HTML content..."}</p>
-</html>`;
-const readableStream = Readable.from(htmlContent);
-
-http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-  readableStream.pipe(res);
-});
+http
+  .createServer((req, res) => {
+    const htmlContent = htmlGenerator`<html>
+    <p>${"...HTML content..."}</p>
+  </html>`;
+    const readableStream = Readable.from(htmlContent);
+    res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+    readableStream.pipe(res);
+  })
+  .listen(3000);
 ```
 
 ### `includeFile`
