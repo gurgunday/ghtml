@@ -66,7 +66,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     } else {
       if (typeof expressions[index][Symbol.iterator] === "function") {
         const isRaw =
-          literal.length > 0 && literal.charCodeAt(literal.length - 1) === 33;
+          literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
