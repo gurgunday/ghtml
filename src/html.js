@@ -29,9 +29,11 @@ const html = ({ raw: literals }, ...expressions) => {
     let expression =
       typeof expressions[index] === "string"
         ? expressions[index]
-        : Array.isArray(expressions[index])
-          ? expressions[index].join("")
-          : `${expressions[index] ?? ""}`;
+        : expressions[index] === undefined || expressions[index] === null
+          ? ""
+          : Array.isArray(expressions[index])
+            ? expressions[index].join("")
+            : `${expressions[index]}`;
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
@@ -59,44 +61,54 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (typeof expressions[index] === "string") {
       expression = expressions[index];
-    } else if (typeof expressions[index][Symbol.iterator] === "function") {
-      const isRaw =
-        literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
-
-      if (isRaw) {
-        literal = literal.slice(0, -1);
-      }
-
-      if (literal.length) {
-        yield literal;
-      }
-
-      for (const value of expressions[index]) {
-        if (typeof value === "string") {
-          expression = value;
-        } else if (typeof value[Symbol.iterator] === "function") {
-          expression = "";
-
-          for (const innerValue of value) {
-            // At this level, we simply mirror Array.prototype.join
-            expression += innerValue ?? "";
-          }
-        } else {
-          expression = `${value ?? ""}`;
-        }
-
-        if (expression.length) {
-          if (!isRaw) {
-            expression = expression.replace(escapeRegExp, escapeFunction);
-          }
-
-          yield expression;
-        }
-      }
-
-      continue;
+    } else if (
+      expressions[index] === undefined ||
+      expressions[index] === null
+    ) {
+      expression = "";
     } else {
-      expression = `${expressions[index] ?? ""}`;
+      if (typeof expressions[index][Symbol.iterator] === "function") {
+        const isRaw =
+          literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
+
+        if (isRaw) {
+          literal = literal.slice(0, -1);
+        }
+
+        if (literal.length) {
+          yield literal;
+        }
+
+        for (const value of expressions[index]) {
+          if (typeof value === "string") {
+            expression = value;
+          } else if (value === undefined || value === null) {
+            expression = "";
+          } else if (typeof value[Symbol.iterator] === "function") {
+            expression = "";
+
+            for (const innerValue of value) {
+              if (innerValue !== undefined && innerValue !== null) {
+                expression += innerValue;
+              }
+            }
+          } else {
+            expression = `${value}`;
+          }
+
+          if (expression.length) {
+            if (!isRaw) {
+              expression = expression.replace(escapeRegExp, escapeFunction);
+            }
+
+            yield expression;
+          }
+        }
+
+        continue;
+      }
+
+      expression = `${expressions[index]}`;
     }
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
