@@ -88,9 +88,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
             expression = "";
 
             for (const innerValue of value) {
-              if (innerValue !== undefined && innerValue !== null) {
-                expression += innerValue;
-              }
+              expression += innerValue ?? "";
             }
           } else {
             expression = `${value}`;
