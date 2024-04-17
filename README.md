@@ -20,7 +20,7 @@ The `htmlGenerator` function acts as the generator version of the `html` functio
 
 **Note:**
 
-A key difference of `htmlGenerator` is its ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` usage, enabling scenarios such as ``[1,2,3].map(i => htmlGenerator`<li>${i}</li>`)``.
+A key difference of `htmlGenerator` is its ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` usage, enabling scenarios such as ``${[1,2,3].map(i => htmlGenerator`<li>${i}</li>`)}``.
 
 As a side effect, an expression like `${[[1, 2, 3], 4]}` (where an element is an array itself) will not be rendered as `"1,2,34"`, which is the case with `html`, but as `"1234"`. This is the intended behavior most of the time anyway.
 
