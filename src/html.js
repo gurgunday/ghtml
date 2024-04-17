@@ -29,7 +29,7 @@ const html = ({ raw: literals }, ...expressions) => {
     let expression =
       typeof expressions[index] === "string"
         ? expressions[index]
-        : expressions[index] == null
+        : expressions[index] === undefined || expressions[index] === null
           ? ""
           : Array.isArray(expressions[index])
             ? expressions[index].join("")
@@ -61,7 +61,10 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (typeof expressions[index] === "string") {
       expression = expressions[index];
-    } else if (expressions[index] == null) {
+    } else if (
+      expressions[index] === undefined ||
+      expressions[index] === null
+    ) {
       expression = "";
     } else {
       if (typeof expressions[index][Symbol.iterator] === "function") {
@@ -79,16 +82,13 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
         for (const value of expressions[index]) {
           if (typeof value === "string") {
             expression = value;
-          } else if (value == null) {
+          } else if (value === undefined || value === null) {
             expression = "";
           } else if (typeof value[Symbol.iterator] === "function") {
             expression = "";
 
             for (const innerValue of value) {
-              if (innerValue != null) {
-                // At this level, we simply mirror Array.prototype.join
-                expression += innerValue;
-              }
+              expression += innerValue ?? "";
             }
           } else {
             expression = `${value}`;
