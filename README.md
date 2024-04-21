@@ -82,12 +82,13 @@ const htmlString = html`
 ```js
 import { htmlGenerator as html } from "ghtml";
 import { Readable } from "node:stream";
+import http from "node:http";
 
 http
   .createServer((req, res) => {
-    const htmlContent = htmlGenerator`<html>
-    <p>${"...HTML content..."}</p>
-  </html>`;
+    const htmlContent = html`<html>
+      <p>${"...HTML content..."}</p>
+    </html>`;
     const readableStream = Readable.from(htmlContent);
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
     readableStream.pipe(res);
