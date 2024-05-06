@@ -1,4 +1,7 @@
 {
   "root": true,
-  "extends": ["plugin:grules/all"]
+  "extends": ["plugin:grules/all"],
+  "rules": {
+    "no-await-in-loop": "off"
+  }
 }

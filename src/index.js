@@ -1,1 +1,1 @@
-export { html, htmlGenerator } from "./html.js";
+export { html, htmlGenerator, htmlAsyncGenerator } from "./html.js";

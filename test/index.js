@@ -1,4 +1,6 @@
-import { html, htmlGenerator } from "../src/index.js";
+import { html, htmlGenerator, htmlAsyncGenerator } from "../src/index.js";
+import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert";
 
@@ -18,6 +20,16 @@ const generatorExample = function* () {
   yield null;
   yield 255;
   yield "</p>";
+};
+
+const generatorPromiseExample = function* () {
+  yield [
+    new Promise((resolve) => {
+      resolve("<p>");
+    }),
+    null,
+  ];
+  yield;
 };
 
 test("renders empty input", () => {
@@ -197,4 +209,59 @@ test("htmlGenerator works with other generators within an array (escaped)", () =
   );
   assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
+});
+
+test("htmlAsyncGenerator renders safe content", async () => {
+  const generator = htmlAsyncGenerator`<p>${descriptionSafe}!${descriptionUnsafe}G!${htmlAsyncGenerator`${array1}`}!${null}${255}</p>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<p>This is a safe description.<script>alert('This is an unsafe description.')</script>G12345255</p>",
+  );
+});
+
+test("htmlAsyncGenerator renders unsafe content", async () => {
+  const generator = htmlAsyncGenerator`<p>${descriptionSafe}${descriptionUnsafe}${htmlAsyncGenerator`${array1}`}${null}${255}</p>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255</p>",
+  );
+});
+
+test("htmlAsyncGenerator works with nested htmlAsyncGenerator calls in an array", async () => {
+  const generator = htmlAsyncGenerator`!${[1, 2, 3].map(() => {
+    return htmlAsyncGenerator`${readFile("test/test.md", "utf8")}`;
+  })}`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator.replaceAll("\n", "").trim(),
+    readFileSync("test/test.md", "utf8").trim().repeat(3),
+  );
+});
+
+test("htmlAsyncGenerator works with promises in an array", async () => {
+  const generator = htmlAsyncGenerator`<ul>${generatorPromiseExample()}</ul>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(accumulator, "<ul>&lt;p&gt;</ul>");
 });

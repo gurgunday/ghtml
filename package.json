@@ -14,7 +14,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "npm run lint && c8 --100 node --test test/**",
+    "test": "npm run lint && c8 --100 node --test test/*.js",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint --fix . && prettier --write ."
   },
