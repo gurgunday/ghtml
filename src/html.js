@@ -153,18 +153,32 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
         for await (const value of expressions[index]) {
           if (value === undefined || value === null) {
             continue;
-          } else if (
+          }
+
+          if (
             typeof value[Symbol.iterator] === "function" ||
             typeof value[Symbol.asyncIterator] === "function"
           ) {
-            expression = "";
-
             for await (const innerValue of value) {
-              expression += innerValue ?? "";
+              if (innerValue === undefined || innerValue === null) {
+                continue;
+              }
+
+              expression = `${innerValue}`;
+
+              if (expression.length) {
+                if (!isRaw) {
+                  expression = expression.replace(escapeRegExp, escapeFunction);
+                }
+
+                yield expression;
+              }
             }
-          } else {
-            expression = `${value}`;
+
+            continue;
           }
+
+          expression = `${value}`;
 
           if (expression.length) {
             if (!isRaw) {
