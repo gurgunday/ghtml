@@ -1,8 +1,103 @@
 name: benchmark
 
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request_target:
+    types: [labeled]
+
 jobs:
   benchmark:
+    if: ${{ github.event.label.name == 'benchmark' }}
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout PR code
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      # Run benchmark on PR code
+      - name: Run benchmark on PR code
+        run: npm run benchmark
+        id: benchmark_pr
+
+      # Save PR benchmark results
+      - name: Save PR benchmark results
+        run: echo "PR_RESULTS=$(cat bench/results.json)" >> "$GITHUB_ENV"
+
+      # Prepare for main branch benchmark
+      - name: Backup PR src directory
+        run: mkdir _pr_branch && mv src _pr_branch/src
+
+      # Checkout main branch src directory
+      - name: Checkout main branch src directory
+        uses: actions/checkout@v4
+        with:
+          ref: "main"
+          path: "_main_branch"
+
+      # Replace PR src with main src
+      - name: Replace PR src with main src
+        run: |
+          rm -rf src
+          cp -R _main_branch/src src
+
+      # Run benchmark on main branch src with PR's benchmark tooling
+      - name: Run benchmark on main branch src
+        run: npm run benchmark
+        id: benchmark_main
+
+      # Save main benchmark results
+      - name: Save main benchmark results
+        run: echo "MAIN_RESULTS=$(cat bench/results.json)" >> "$GITHUB_ENV"
+
+      # Comment PR with benchmark results comparison
+      - name: Comment PR with benchmark results comparison
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const prResults = JSON.parse(Buffer.from(process.env.PR_RESULTS, 'base64').toString('utf8'));
+            const mainResults = JSON.parse(Buffer.from(process.env.MAIN_RESULTS, 'base64').toString('utf8'));
+            const commentBody = `
+              Benchmark Results Comparison (${context.sha}):
+              **PR Branch:**
+              \`\`\`json
+              ${JSON.stringify(prResults, null, 2)}
+              \`\`\`
+              **Main Branch:**
+              \`\`\`json
+              ${JSON.stringify(mainResults, null, 2)}
+              \`\`\`
+            `;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
+
+  remove-label:
+    needs:
+      - benchmark
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
       pull-requests: write
-    uses: fastify/workflows/.github/workflows/plugins-benchmark-pr.yml@v4.2.0
+    steps:
+      - name: Remove benchmark label
+        uses: octokit/request-action@v2
+        with:
+          route: DELETE /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/benchmark
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
