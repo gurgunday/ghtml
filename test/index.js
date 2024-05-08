@@ -175,39 +175,46 @@ test("htmlGenerator works with nested htmlGenerator calls in an array", () => {
 
 test("htmlGenerator works with other generators", () => {
   const generator = htmlGenerator`<div>!${generatorExample()}</div>`;
-  assert.strictEqual(generator.next().value, "<div>");
-  assert.strictEqual(generator.next().value, "<p>");
-  assert.strictEqual(generator.next().value, "This is a safe description.");
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "<script>alert('This is an unsafe description.')</script>",
+    accumulator,
+    "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>12345255</p></div>",
   );
-  assert.strictEqual(generator.next().value, "12345");
-  assert.strictEqual(generator.next().value, "255");
-  assert.strictEqual(generator.next().value, "</p>");
-  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });
 
 test("htmlGenerator works with other generators within an array (raw)", () => {
   const generator = htmlGenerator`<div>!${[generatorExample()]}</div>`;
-  assert.strictEqual(generator.next().value, "<div>");
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "<p>This is a safe description.<script>alert('This is an unsafe description.')</script>1,2,3,4,5255</p>",
+    accumulator,
+    "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>1,2,3,4,5255</p></div>",
   );
-  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });
 
 test("htmlGenerator works with other generators within an array (escaped)", () => {
   const generator = htmlGenerator`<div>${[generatorExample()]}</div>`;
-  assert.strictEqual(generator.next().value, "<div>");
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;1,2,3,4,5255&lt;/p&gt;",
+    accumulator,
+    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;1,2,3,4,5255&lt;/p&gt;</div>",
   );
-  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });
 
