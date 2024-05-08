@@ -22,7 +22,9 @@ The `htmlGenerator` function acts as the generator version of the `html` functio
 
 A key difference of `htmlGenerator` is its ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` usage, enabling scenarios such as ``${[1, 2, 3].map(i => htmlGenerator`<li>${i}</li>`)}``.
 
-As a side effect, an expression like `${[[1, 2, 3], 4]}` (where an element is an array itself) will not be rendered as `"1,2,34"`, which is the case with `html`, but as `"1234"`. This is the intended behavior most of the time anyway.
+### `htmlAsyncGenerator`
+
+This version of HTML generator should be preferred for asynchronous use cases. The output will be generated as the promise expressions resolve.
 
 ### `includeFile`
 
@@ -88,6 +90,26 @@ http
   .createServer((req, res) => {
     const htmlContent = html`<html>
       <p>${"...HTML content..."}</p>
+    </html>`;
+    const readableStream = Readable.from(htmlContent);
+    res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+    readableStream.pipe(res);
+  })
+  .listen(3000);
+```
+
+### `htmlAsyncGenerator`
+
+```js
+import { htmlAsyncGenerator as html } from "ghtml";
+import { readFile } from "node:fs/promises";
+import { Readable } from "node:stream";
+import http from "node:http";
+
+http
+  .createServer((req, res) => {
+    const htmlContent = html`<html>
+      <code>${readFile("./README.md")}</code>
     </html>`;
     const readableStream = Readable.from(htmlContent);
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
