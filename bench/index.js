@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { html } from "../src/index.js";
 import { Bench } from "tinybench";
-import { writeFileSync } from "node:fs";
-import { Buffer } from "node:buffer";
 
 const bench = new Bench({ time: 500 });
 
@@ -94,8 +92,3 @@ await bench.run();
 
 const table = bench.table();
 console.table(table);
-
-writeFileSync(
-  "bench/results.json",
-  Buffer.from(JSON.stringify(table), "utf8").toString("base64"),
-);
