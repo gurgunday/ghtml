@@ -153,9 +153,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     let literal = literals[index];
     let expression;
 
-    if (expressions[index] instanceof Promise) {
-      expressions[index] = await expressions[index];
-    }
+    expressions[index] = await expressions[index];
 
     if (expressions[index] === undefined || expressions[index] === null) {
       expression = "";
