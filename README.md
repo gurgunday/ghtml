@@ -18,13 +18,13 @@ The `html` function is designed to tag template literals and automatically escap
 
 The `htmlGenerator` function acts as the generator version of the `html` function. It facilitates the creation of HTML fragments iteratively, making it ideal for parsing large templates or constructing HTML content dynamically.
 
-**Note:**
-
-A key difference of `htmlGenerator` is its ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` usage, enabling scenarios such as ``${[1, 2, 3].map(i => htmlGenerator`<li>${i}</li>`)}``.
-
 ### `htmlAsyncGenerator`
 
 This version of HTML generator should be preferred for asynchronous use cases. The output will be generated as the promise expressions resolve.
+
+**Note:**
+
+Because they return generators instead of strings, a key difference of `htmlGenerator` and `htmlAsyncGenerator` is their ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` and `htmlAsyncGenerator` usage, enabling scenarios such as ``${[1, 2, 3].map(i => htmlGenerator`<li>${i}</li>`)}``.
 
 ### `includeFile`
 
