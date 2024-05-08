@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Remove benchmark label
-        uses: octokit/request-action@v2
+        uses: octokit/request-action@v2.x
         with:
           route: DELETE /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/benchmark
         env:
