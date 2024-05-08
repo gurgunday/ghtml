@@ -1,12 +1,12 @@
 name: benchmark
 
-permissions:
-  contents: read
-  pull-requests: write
-
 on:
   pull_request_target:
     types: [labeled]
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   benchmark:
@@ -89,14 +89,11 @@ jobs:
             });
 
   remove-label:
-    needs:
-      - benchmark
+    needs: benchmark
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
       - name: Remove benchmark label
-        uses: octokit/request-action@v2
+        uses: octokit/request-action@v2.x
         with:
           route: DELETE /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/benchmark
         env:

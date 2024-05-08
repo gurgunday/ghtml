@@ -1,84 +1,67 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
 import { html } from "../src/index.js";
 import { Bench } from "tinybench";
 import { writeFileSync } from "node:fs";
 import { Buffer } from "node:buffer";
 
+let result = "";
 const bench = new Bench({ time: 500 });
 
-bench.add("Simple formatting", () => {
-  html`<div>Hello, world!</div>`;
+bench.add("simple HTML formatting", () => {
+  result = html`<div>Hello, world!</div>`;
+});
+
+bench.add("null and undefined expressions", () => {
+  result = html`<p>${null} and ${undefined}</p>`;
 });
 
 const username = "User";
-bench.add("Using string variable", () => {
-  html`<p>${username}</p>`;
+bench.add("string expressions", () => {
+  result = html`<p>${username} and ${username}</p>`;
 });
 
-const value = null;
-const undef = undefined;
-bench.add("Handling null and undefined", () => {
-  html`<p>${value} and ${undef}</p>`;
+const items1 = ["Item 1", undefined, "Item 2", null, 2000, 1500.5];
+bench.add("array expressions", () => {
+  result = html`<ul>
+    ${items1.map((item) => {
+      return html`<li>${item}</li>`;
+    })}
+  </ul>`;
 });
 
 const user = { id: 1, name: "John Doe" };
-bench.add("Multiple types of expressions", () => {
-  html`
+const items2 = ["Item 1", "Item 2", "Item 3"];
+bench.add("multiple types of expressions", () => {
+  result = html`
     ${undefined}
     <div>User: <span>${user.name}</span></div>
     <div>Id: <span>${user.id}</span></div>
-    ${null}
+    ${null}${123}${456n}
+    <ul>
+      !${items2.map((item) => {
+        return html`<li>${item}</li>`;
+      })}
+    </ul>
   `;
 });
 
-const items = ["Item 1", "Item 2", "Item 3"];
-bench.add("Arrays and iteration", () => {
-  html`<ul>
-    ${items.map((item) => {
-      return html`<li>${item}</li>`;
-    })}
-  </ul>`;
-});
-
-const items2 = ["Item 1", undefined, "Item 2", null, 2000];
-bench.add("Arrays and iteration with multiple types", () => {
-  html`<ul>
-    ${items2.map((item) => {
-      return html`<li>${item}</li>`;
-    })}
-  </ul>`;
-});
-
-const loggedIn = true;
-bench.add("Complex/nested expressions", () => {
-  html`<nav>
-    ${loggedIn
-      ? html`<a href="/logout">Logout</a>`
-      : html`<a href="/login">Login</a>`}
-  </nav>`;
-});
-
 const largeString = Array.from({ length: 1000 }).join("Lorem ipsum ");
-bench.add("Large strings", () => {
-  html`<p>${largeString}</p>`;
-});
-
-bench.add("High iteration count", () => {
-  for (let i = 0; i !== 1000; i++) {
-    html`<span>${i}</span>`;
-  }
+bench.add("large strings", () => {
+  result = html`<p>${largeString}${largeString}</p>`;
 });
 
 const scriptContent =
   "<script>console.log('This should not execute');</script>";
-bench.add("Escape HTML", () => {
-  html`<div>${scriptContent} ${scriptContent}</div>`;
+bench.add("high iteration count", () => {
+  for (let i = 0; i !== 100; i++) {
+    result = html`<span>${i}: ${scriptContent}</span>`;
+  }
 });
 
-// Render raw HTML
 const rawHTML = "<em>Italic</em> and <strong>bold</strong>";
 const markup = "<mark>Highlighted</mark>";
-bench.add("Unescaped expressions", () => {
+bench.add("unescaped expressions", () => {
   html`
     <div>!${rawHTML}</div>
     <div>!${rawHTML}</div>
