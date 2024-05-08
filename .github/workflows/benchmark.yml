@@ -38,7 +38,7 @@ jobs:
       - name: Run benchmark
         id: benchmark-pr
         run: |
-          npm run --silent benchmark > ./bench-result.md
+          npm run benchmark > ./bench-result.md
           result=$(awk '/requests in/' ./bench-result.md)
           echo 'BENCH_RESULT${{matrix.node-version}}<<EOF' >> $GITHUB_OUTPUT
           echo "$result" >> $GITHUB_OUTPUT
@@ -57,7 +57,7 @@ jobs:
       - name: Run benchmark
         id: benchmark-main
         run: |
-          npm run --silent benchmark > ./bench-result.md
+          npm run benchmark > ./bench-result.md
           result=$(awk '/requests in/' ./bench-result.md)
           echo 'BENCH_RESULT${{matrix.node-version}}<<EOF' >> $GITHUB_OUTPUT
           echo "$result" >> $GITHUB_OUTPUT
