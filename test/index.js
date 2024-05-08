@@ -1,4 +1,6 @@
-import { html, htmlGenerator } from "../src/index.js";
+import { html, htmlGenerator, htmlAsyncGenerator } from "../src/index.js";
+import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert";
 
@@ -18,6 +20,17 @@ const generatorExample = function* () {
   yield null;
   yield 255;
   yield "</p>";
+};
+
+const generatorPromiseExample = function* () {
+  yield [
+    new Promise((resolve) => {
+      resolve("<p>");
+    }),
+    null,
+    12n,
+  ];
+  yield;
 };
 
 test("renders empty input", () => {
@@ -163,38 +176,186 @@ test("htmlGenerator works with nested htmlGenerator calls in an array", () => {
 
 test("htmlGenerator works with other generators", () => {
   const generator = htmlGenerator`<div>!${generatorExample()}</div>`;
-  assert.strictEqual(generator.next().value, "<div>");
-  assert.strictEqual(generator.next().value, "<p>");
-  assert.strictEqual(generator.next().value, "This is a safe description.");
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "<script>alert('This is an unsafe description.')</script>",
+    accumulator,
+    "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>12345255</p></div>",
   );
-  assert.strictEqual(generator.next().value, "12345");
-  assert.strictEqual(generator.next().value, "255");
-  assert.strictEqual(generator.next().value, "</p>");
-  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });
 
 test("htmlGenerator works with other generators within an array (raw)", () => {
   const generator = htmlGenerator`<div>!${[generatorExample()]}</div>`;
-  assert.strictEqual(generator.next().value, "<div>");
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "<p>This is a safe description.<script>alert('This is an unsafe description.')</script>1,2,3,4,5255</p>",
+    accumulator,
+    "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>1,2,3,4,5255</p></div>",
   );
-  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
 });
 
 test("htmlGenerator works with other generators within an array (escaped)", () => {
   const generator = htmlGenerator`<div>${[generatorExample()]}</div>`;
-  assert.strictEqual(generator.next().value, "<div>");
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
   assert.strictEqual(
-    generator.next().value,
-    "&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;1,2,3,4,5255&lt;/p&gt;",
+    accumulator,
+    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;1,2,3,4,5255&lt;/p&gt;</div>",
   );
-  assert.strictEqual(generator.next().value, "</div>");
   assert.strictEqual(generator.next().done, true);
+});
+
+test("htmlAsyncGenerator renders safe content", async () => {
+  const generator = htmlAsyncGenerator`<p>${descriptionSafe}!${descriptionUnsafe}G!${htmlAsyncGenerator`${array1}`}!${null}${255}</p>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<p>This is a safe description.<script>alert('This is an unsafe description.')</script>G12345255</p>",
+  );
+});
+
+test("htmlAsyncGenerator renders unsafe content", async () => {
+  const generator = htmlAsyncGenerator`<p>${descriptionSafe}${descriptionUnsafe}${htmlAsyncGenerator`${array1}`}${null}${255}</p>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255</p>",
+  );
+});
+
+test("htmlAsyncGenerator works with nested htmlAsyncGenerator calls in an array", async () => {
+  const generator = htmlAsyncGenerator`!${[1, 2, 3].map((i) => {
+    return htmlAsyncGenerator`${i}: <p>${readFile("test/test.md", "utf8")}</p>`;
+  })}`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator.replaceAll("\n", "").trim(),
+    "1: <p># test.md&gt;</p>2: <p># test.md&gt;</p>3: <p># test.md&gt;</p>",
+  );
+});
+
+test("htmlAsyncGenerator renders chunks with promises (escaped)", async () => {
+  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => {
+    return htmlAsyncGenerator`${i}: ${readFile("test/test.md", "utf8")}`;
+  })}</ul>`;
+  const fileContent = readFileSync("test/test.md", "utf8").replaceAll(
+    ">",
+    "&gt;",
+  );
+
+  let value = await generator.next();
+  assert.strictEqual(value.value, "<ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `1`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `2`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "</ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.done, true);
+});
+
+test("htmlAsyncGenerator renders chunks with promises (raw)", async () => {
+  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => {
+    return htmlAsyncGenerator`${i}: !${readFile("test/test.md", "utf8")}`;
+  })}</ul>`;
+  const fileContent = readFileSync("test/test.md", "utf8");
+
+  let value = await generator.next();
+  assert.strictEqual(value.value, "<ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `1`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `2`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "</ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.done, true);
+});
+
+test("htmlAsyncGenerator redners in chuncks", async () => {
+  const generator = htmlAsyncGenerator`<ul>${generatorPromiseExample()}</ul>`;
+
+  let value = await generator.next();
+  assert.strictEqual(value.value, "<ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "&lt;p&gt;");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "12");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "</ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.done, true);
+});
+
+test("htmlAsyncGenerator redners in chuncks (raw)", async () => {
+  const generator = htmlAsyncGenerator`<ul>!${generatorPromiseExample()}</ul>`;
+
+  let value = await generator.next();
+  assert.strictEqual(value.value, "<ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "<p>");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "12");
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "</ul>");
+
+  value = await generator.next();
+  assert.strictEqual(value.done, true);
 });
