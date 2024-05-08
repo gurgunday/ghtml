@@ -264,41 +264,59 @@ test("htmlAsyncGenerator works with nested htmlAsyncGenerator calls in an array"
 });
 
 test("htmlAsyncGenerator renders chunks with promises (escaped)", async () => {
-  const generator = htmlAsyncGenerator`!${[1, 2, 3].map(() => {
-    return htmlAsyncGenerator`${readFile("test/test.md", "utf8")}`;
-  })}`;
+  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => {
+    return htmlAsyncGenerator`${i}: ${readFile("test/test.md", "utf8")}`;
+  })}</ul>`;
   const fileContent = readFileSync("test/test.md", "utf8").replaceAll(
     ">",
     "&gt;",
   );
 
   let value = await generator.next();
-  assert.strictEqual(value.value, fileContent);
+  assert.strictEqual(value.value, "<ul>");
 
   value = await generator.next();
-  assert.strictEqual(value.value, fileContent);
+  assert.strictEqual(value.value, `1`);
 
   value = await generator.next();
-  assert.strictEqual(value.value, fileContent);
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `2`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "</ul>");
 
   value = await generator.next();
   assert.strictEqual(value.done, true);
 });
 
 test("htmlAsyncGenerator renders chunks with promises (raw)", async () => {
-  const generator = htmlAsyncGenerator`!${[1, 2, 3].map(() => {
-    return htmlAsyncGenerator`!${readFile("test/test.md", "utf8")}`;
-  })}`;
+  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => {
+    return htmlAsyncGenerator`${i}: !${readFile("test/test.md", "utf8")}`;
+  })}</ul>`;
   const fileContent = readFileSync("test/test.md", "utf8");
 
   let value = await generator.next();
-  assert.strictEqual(value.value, fileContent);
+  assert.strictEqual(value.value, "<ul>");
 
   value = await generator.next();
-  assert.strictEqual(value.value, fileContent);
+  assert.strictEqual(value.value, `1`);
 
   value = await generator.next();
-  assert.strictEqual(value.value, fileContent);
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `2`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, `: ${fileContent}`);
+
+  value = await generator.next();
+  assert.strictEqual(value.value, "</ul>");
 
   value = await generator.next();
   assert.strictEqual(value.done, true);
