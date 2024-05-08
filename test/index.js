@@ -28,6 +28,7 @@ const generatorPromiseExample = function* () {
       resolve("<p>");
     }),
     null,
+    12n,
   ];
   yield;
 };
@@ -270,5 +271,5 @@ test("htmlAsyncGenerator works with promises in an array", async () => {
     accumulator += value;
   }
 
-  assert.strictEqual(accumulator, "<ul>&lt;p&gt;</ul>");
+  assert.strictEqual(accumulator, "<ul>&lt;p&gt;12</ul>");
 });

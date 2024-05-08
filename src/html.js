@@ -27,10 +27,10 @@ const html = ({ raw: literals }, ...expressions) => {
   for (; index !== expressions.length; ++index) {
     let literal = literals[index];
     let expression =
-      typeof expressions[index] === "string"
-        ? expressions[index]
-        : expressions[index] === undefined || expressions[index] === null
-          ? ""
+      expressions[index] === undefined || expressions[index] === null
+        ? ""
+        : typeof expressions[index] === "string"
+          ? expressions[index]
           : Array.isArray(expressions[index])
             ? expressions[index].join("")
             : `${expressions[index]}`;
@@ -59,13 +59,10 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     let literal = literals[index];
     let expression;
 
-    if (typeof expressions[index] === "string") {
-      expression = expressions[index];
-    } else if (
-      expressions[index] === undefined ||
-      expressions[index] === null
-    ) {
+    if (expressions[index] === undefined || expressions[index] === null) {
       expression = "";
+    } else if (typeof expressions[index] === "string") {
+      expression = expressions[index];
     } else {
       if (typeof expressions[index][Symbol.iterator] === "function") {
         const isRaw =
@@ -80,17 +77,17 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
         }
 
         for (const value of expressions[index]) {
-          if (typeof value === "string") {
-            expression = value;
-          } else if (value === undefined || value === null) {
+          if (value === undefined || value === null) {
             continue;
+          } else if (typeof value === "string") {
+            expression = value;
           } else {
             if (typeof value[Symbol.iterator] === "function") {
               for (const innerValue of value) {
-                if (typeof innerValue === "string") {
-                  expression = innerValue;
-                } else if (innerValue === undefined || innerValue === null) {
+                if (innerValue === undefined || innerValue === null) {
                   continue;
+                } else if (typeof innerValue === "string") {
+                  expression = innerValue;
                 } else {
                   expression = `${innerValue}`;
                 }
@@ -160,13 +157,10 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
       expressions[index] = await expressions[index];
     }
 
-    if (typeof expressions[index] === "string") {
-      expression = expressions[index];
-    } else if (
-      expressions[index] === undefined ||
-      expressions[index] === null
-    ) {
+    if (expressions[index] === undefined || expressions[index] === null) {
       expression = "";
+    } else if (typeof expressions[index] === "string") {
+      expression = expressions[index];
     } else {
       if (
         typeof expressions[index][Symbol.iterator] === "function" ||
@@ -184,10 +178,10 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
         }
 
         for await (const value of expressions[index]) {
-          if (typeof value === "string") {
-            expression = value;
-          } else if (value === undefined || value === null) {
+          if (value === undefined || value === null) {
             continue;
+          } else if (typeof value === "string") {
+            expression = value;
           } else {
             if (
               typeof value[Symbol.iterator] === "function" ||
@@ -196,9 +190,11 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
               for await (const innerValue of value) {
                 if (innerValue === undefined || innerValue === null) {
                   continue;
+                } else if (typeof innerValue === "string") {
+                  expression = innerValue;
+                } else {
+                  expression = `${innerValue}`;
                 }
-
-                expression = `${innerValue}`;
 
                 if (expression.length) {
                   if (!isRaw) {
