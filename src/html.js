@@ -57,14 +57,15 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
   for (; index !== expressions.length; ++index) {
     let literal = literals[index];
-    let expression;
+    let expression = expressions[index];
+    let string;
 
-    if (expressions[index] === undefined || expressions[index] === null) {
-      expression = "";
-    } else if (typeof expressions[index] === "string") {
-      expression = expressions[index];
+    if (expression === undefined || expression === null) {
+      string = "";
+    } else if (typeof expression === "string") {
+      string = expression;
     } else {
-      if (expressions[index][Symbol.iterator]) {
+      if (expression[Symbol.iterator]) {
         const isRaw =
           literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -76,64 +77,61 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
           yield literal;
         }
 
-        for (const value of expressions[index]) {
-          if (value === undefined || value === null) {
+        for (expression of expression) {
+          if (expression === undefined || expression === null) {
             continue;
           }
 
-          if (typeof value === "string") {
-            expression = value;
+          if (typeof expression === "string") {
+            string = expression;
           } else {
-            if (value[Symbol.iterator]) {
-              for (const innerValue of value) {
-                if (innerValue === undefined || innerValue === null) {
+            if (expression[Symbol.iterator]) {
+              for (expression of expression) {
+                if (expression === undefined || expression === null) {
                   continue;
                 }
 
-                expression =
-                  typeof innerValue === "string" ? innerValue : `${innerValue}`;
+                string =
+                  typeof expression === "string" ? expression : `${expression}`;
 
-                if (expression.length) {
+                if (string.length) {
                   if (!isRaw) {
-                    expression = expression.replace(
-                      escapeRegExp,
-                      escapeFunction,
-                    );
+                    string = string.replace(escapeRegExp, escapeFunction);
                   }
 
-                  yield expression;
+                  yield string;
                 }
               }
 
               continue;
             }
 
-            expression = `${value}`;
+            string = `${expression}`;
           }
 
-          if (expression.length) {
+          if (string.length) {
             if (!isRaw) {
-              expression = expression.replace(escapeRegExp, escapeFunction);
+              string = string.replace(escapeRegExp, escapeFunction);
             }
 
-            yield expression;
+            yield string;
           }
         }
 
         continue;
       }
 
-      expression = `${expressions[index]}`;
+      string = `${expression}`;
     }
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (expression.length) {
-      expression = expression.replace(escapeRegExp, escapeFunction);
+    } else if (string.length) {
+      string = string.replace(escapeRegExp, escapeFunction);
     }
 
-    if (literal.length || expression.length) {
-      yield literal + expression;
+    if (literal.length || string.length) {
+      yield literal + string;
     }
   }
 
