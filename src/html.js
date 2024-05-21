@@ -64,7 +64,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     } else if (typeof expressions[index] === "string") {
       expression = expressions[index];
     } else {
-      if (typeof expressions[index][Symbol.iterator] === "function") {
+      if (expressions[index][Symbol.iterator]) {
         const isRaw =
           literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -79,18 +79,19 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
         for (const value of expressions[index]) {
           if (value === undefined || value === null) {
             continue;
-          } else if (typeof value === "string") {
+          }
+
+          if (typeof value === "string") {
             expression = value;
           } else {
-            if (typeof value[Symbol.iterator] === "function") {
+            if (value[Symbol.iterator]) {
               for (const innerValue of value) {
                 if (innerValue === undefined || innerValue === null) {
                   continue;
-                } else if (typeof innerValue === "string") {
-                  expression = innerValue;
-                } else {
-                  expression = `${innerValue}`;
                 }
+
+                expression =
+                  typeof innerValue === "string" ? innerValue : `${innerValue}`;
 
                 if (expression.length) {
                   if (!isRaw) {
@@ -161,8 +162,8 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
       expression = expressions[index];
     } else {
       if (
-        typeof expressions[index][Symbol.iterator] === "function" ||
-        typeof expressions[index][Symbol.asyncIterator] === "function"
+        expressions[index][Symbol.iterator] ||
+        expressions[index][Symbol.asyncIterator]
       ) {
         const isRaw =
           literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
@@ -178,21 +179,19 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
         for await (const value of expressions[index]) {
           if (value === undefined || value === null) {
             continue;
-          } else if (typeof value === "string") {
+          }
+
+          if (typeof value === "string") {
             expression = value;
           } else {
-            if (
-              typeof value[Symbol.iterator] === "function" ||
-              typeof value[Symbol.asyncIterator] === "function"
-            ) {
+            if (value[Symbol.iterator] || value[Symbol.asyncIterator]) {
               for await (const innerValue of value) {
                 if (innerValue === undefined || innerValue === null) {
                   continue;
-                } else if (typeof innerValue === "string") {
-                  expression = innerValue;
-                } else {
-                  expression = `${innerValue}`;
                 }
+
+                expression =
+                  typeof innerValue === "string" ? innerValue : `${innerValue}`;
 
                 if (expression.length) {
                   if (!isRaw) {
