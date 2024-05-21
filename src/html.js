@@ -1,4 +1,4 @@
-const escapeDictionary = {
+const escapeDict = {
   '"': "&quot;",
   "'": "&apos;",
   "&": "&amp;",
@@ -6,13 +6,10 @@ const escapeDictionary = {
   ">": "&gt;",
 };
 
-const escapeRegExp = new RegExp(
-  `[${Object.keys(escapeDictionary).join("")}]`,
-  "gu",
-);
+const escapeRE = new RegExp(`[${Object.keys(escapeDict).join("")}]`, "gu");
 
-const escapeFunction = (key) => {
-  return escapeDictionary[key];
+const escapeFn = (key) => {
+  return escapeDict[key];
 };
 
 /**
@@ -38,7 +35,7 @@ const html = ({ raw: literals }, ...expressions) => {
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else if (string.length) {
-      string = string.replace(escapeRegExp, escapeFunction);
+      string = string.replace(escapeRE, escapeFn);
     }
 
     accumulator += literal + string;
@@ -91,12 +88,11 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                   continue;
                 }
 
-                string =
-                  typeof expression === "string" ? expression : `${expression}`;
+                string = `${expression}`;
 
                 if (string.length) {
                   if (!isRaw) {
-                    string = string.replace(escapeRegExp, escapeFunction);
+                    string = string.replace(escapeRE, escapeFn);
                   }
 
                   yield string;
@@ -111,7 +107,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
           if (string.length) {
             if (!isRaw) {
-              string = string.replace(escapeRegExp, escapeFunction);
+              string = string.replace(escapeRE, escapeFn);
             }
 
             yield string;
@@ -127,7 +123,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else if (string.length) {
-      string = string.replace(escapeRegExp, escapeFunction);
+      string = string.replace(escapeRE, escapeFn);
     }
 
     if (literal.length || string.length) {
@@ -150,19 +146,15 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
   for (; index !== expressions.length; ++index) {
     let literal = literals[index];
-    let expression;
+    let expression = await expressions[index];
+    let string;
 
-    expressions[index] = await expressions[index];
-
-    if (expressions[index] === undefined || expressions[index] === null) {
-      expression = "";
-    } else if (typeof expressions[index] === "string") {
-      expression = expressions[index];
+    if (expression === undefined || expression === null) {
+      string = "";
+    } else if (typeof expression === "string") {
+      string = expression;
     } else {
-      if (
-        expressions[index][Symbol.iterator] ||
-        expressions[index][Symbol.asyncIterator]
-      ) {
+      if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
         const isRaw =
           literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -174,64 +166,63 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
           yield literal;
         }
 
-        for await (const value of expressions[index]) {
-          if (value === undefined || value === null) {
+        for await (expression of expression) {
+          if (expression === undefined || expression === null) {
             continue;
           }
 
-          if (typeof value === "string") {
-            expression = value;
+          if (typeof expression === "string") {
+            string = expression;
           } else {
-            if (value[Symbol.iterator] || value[Symbol.asyncIterator]) {
-              for await (const innerValue of value) {
-                if (innerValue === undefined || innerValue === null) {
+            if (
+              expression[Symbol.iterator] ||
+              expression[Symbol.asyncIterator]
+            ) {
+              for await (expression of expression) {
+                if (expression === undefined || expression === null) {
                   continue;
                 }
 
-                expression =
-                  typeof innerValue === "string" ? innerValue : `${innerValue}`;
+                string = `${expression}`;
 
-                if (expression.length) {
+                if (string.length) {
                   if (!isRaw) {
-                    expression = expression.replace(
-                      escapeRegExp,
-                      escapeFunction,
-                    );
+                    string = string.replace(escapeRE, escapeFn);
                   }
 
-                  yield expression;
+                  yield string;
                 }
               }
 
               continue;
             }
 
-            expression = `${value}`;
+            string = `${expression}`;
           }
 
-          if (expression.length) {
+          if (string.length) {
             if (!isRaw) {
-              expression = expression.replace(escapeRegExp, escapeFunction);
+              string = string.replace(escapeRE, escapeFn);
             }
 
-            yield expression;
+            yield string;
           }
         }
 
         continue;
       }
 
-      expression = `${expressions[index]}`;
+      string = `${expression}`;
     }
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (expression.length) {
-      expression = expression.replace(escapeRegExp, escapeFunction);
+    } else if (string.length) {
+      string = string.replace(escapeRE, escapeFn);
     }
 
-    if (literal.length || expression.length) {
-      yield literal + expression;
+    if (literal.length || string.length) {
+      yield literal + string;
     }
   }
 

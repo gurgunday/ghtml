@@ -1,19 +1,17 @@
 import { readFileSync } from "node:fs";
 
-const readFileSyncOptions = { encoding: "utf8" };
-
-const fileCache = new Map();
+const cache = new Map();
 
 /**
  * @param {string} path The path to the file to render.
  * @returns {string} The cached content of the file.
  */
 const includeFile = (path) => {
-  let file = fileCache.get(path);
+  let file = cache.get(path);
 
   if (file === undefined) {
-    file = readFileSync(path, readFileSyncOptions);
-    fileCache.set(path, file);
+    file = readFileSync(path, "utf8");
+    cache.set(path, file);
   }
 
   return file;
