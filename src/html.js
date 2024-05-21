@@ -26,7 +26,7 @@ const html = ({ raw: literals }, ...expressions) => {
 
   for (; index !== expressions.length; ++index) {
     let literal = literals[index];
-    let expression =
+    let string =
       expressions[index] === undefined || expressions[index] === null
         ? ""
         : typeof expressions[index] === "string"
@@ -37,11 +37,11 @@ const html = ({ raw: literals }, ...expressions) => {
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (expression.length) {
-      expression = expression.replace(escapeRegExp, escapeFunction);
+    } else if (string.length) {
+      string = string.replace(escapeRegExp, escapeFunction);
     }
 
-    accumulator += literal + expression;
+    accumulator += literal + string;
   }
 
   return (accumulator += literals[index]);
