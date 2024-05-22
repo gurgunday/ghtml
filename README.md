@@ -90,7 +90,7 @@ http
         <p>You are at: ${req.url}</p>
       </html>`;
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-    res.write(req.url);
+    res.write(htmlContent);
     res.end();
   })
   .listen(3000);
