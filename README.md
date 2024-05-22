@@ -79,6 +79,23 @@ const htmlString = html`
 `;
 ```
 
+```js
+import { html } from "ghtml";
+import http from "node:http";
+
+http
+  .createServer((req, res) => {
+    const htmlContent = html`<!doctype html>
+      <html>
+        <p>You are at: ${req.url}</p>
+      </html>`;
+    res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+    res.write(req.url);
+    res.end();
+  })
+  .listen(3000);
+```
+
 ### `htmlGenerator`
 
 ```js
@@ -92,9 +109,10 @@ const generator = function* () {
 
 http
   .createServer((req, res) => {
-    const htmlContent = html`<html>
-      <p>${generator()}</p>
-    </html>`;
+    const htmlContent = html`<!doctype html>
+      <html>
+        <p>${generator()}</p>
+      </html>`;
     const readableStream = Readable.from(htmlContent);
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
     readableStream.pipe(res);
@@ -112,21 +130,22 @@ import { Readable } from "node:stream";
 import http from "node:http";
 
 const asyncGenerator = async function* () {
-  const Hello = await new Promise((resolve) => {
+  const helloWorld = await new Promise((resolve) => {
     setTimeout(() => {
-      resolve("Hello");
+      resolve("Hello, World!");
     }, 1000);
   });
-  yield `${Hello}!`;
+  yield helloWorld;
 };
 
 http
   .createServer((req, res) => {
-    const htmlContent = html`<html>
-      <p>${asyncGenerator()}</p>
-      <code>${readFile("./README.md", "utf8")}</code>
-      <code>${createReadStream("./README.md", "utf8")}</code>
-    </html>`;
+    const htmlContent = html`<!doctype html>
+      <html>
+        <p>${asyncGenerator()}</p>
+        <code>${readFile("./README.md", "utf8")}</code>
+        <code>${createReadStream("./README.md", "utf8")}</code>
+      </html>`;
     const readableStream = Readable.from(htmlContent);
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
     readableStream.pipe(res);
