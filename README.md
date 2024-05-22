@@ -18,6 +18,10 @@ The `html` function is designed to tag template literals and automatically escap
 
 The `htmlGenerator` function acts as the generator version of the `html` function. It facilitates the creation of HTML fragments iteratively, making it ideal for parsing large templates or constructing HTML content dynamically.
 
+**Note:**
+
+Keep in mind that, in Node.js, all else being equal, streaming a response using synchronous generators will **always** be slower than processing everything directly and sending it at once — [this also applies to TTFB](https://github.com/mcollina/fastify-html/issues/11#issuecomment-2069385895). However, if a template includes promises that do asynchronous operations (I/O, etc.), then `htmlAsyncGenerator` can be used to stream the response as those promises get resolved, which will indeed improve TTFB.
+
 ### `htmlAsyncGenerator`
 
 This version of HTML generator should be preferred for asynchronous use cases. The output will be generated as the promise expressions resolve.
