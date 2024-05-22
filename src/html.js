@@ -1,4 +1,4 @@
-const escapeDict = {
+const escapeDictionary = {
   '"': "&quot;",
   "'": "&apos;",
   "&": "&amp;",
@@ -6,10 +6,13 @@ const escapeDict = {
   ">": "&gt;",
 };
 
-const escapeRE = new RegExp(`[${Object.keys(escapeDict).join("")}]`, "gu");
+const escapeRegExp = new RegExp(
+  `[${Object.keys(escapeDictionary).join("")}]`,
+  "gu",
+);
 
-const escapeFn = (key) => {
-  return escapeDict[key];
+const escapeFunction = (key) => {
+  return escapeDictionary[key];
 };
 
 /**
@@ -22,20 +25,21 @@ const html = ({ raw: literals }, ...expressions) => {
   let index = 0;
 
   for (; index !== expressions.length; ++index) {
+    const expression = expressions[index];
     let literal = literals[index];
     let string =
-      expressions[index] === undefined || expressions[index] === null
+      expression === undefined || expression === null
         ? ""
-        : typeof expressions[index] === "string"
-          ? expressions[index]
-          : Array.isArray(expressions[index])
-            ? expressions[index].join("")
-            : `${expressions[index]}`;
+        : typeof expression === "string"
+          ? expression
+          : Array.isArray(expression)
+            ? expression.join("")
+            : `${expression}`;
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else if (string.length) {
-      string = string.replace(escapeRE, escapeFn);
+      string = string.replace(escapeRegExp, escapeFunction);
     }
 
     accumulator += literal + string;
@@ -53,8 +57,8 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
   let index = 0;
 
   for (; index !== expressions.length; ++index) {
-    let literal = literals[index];
     let expression = expressions[index];
+    let literal = literals[index];
     let string;
 
     if (expression === undefined || expression === null) {
@@ -92,7 +96,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
                 if (string.length) {
                   if (!isRaw) {
-                    string = string.replace(escapeRE, escapeFn);
+                    string = string.replace(escapeRegExp, escapeFunction);
                   }
 
                   yield string;
@@ -107,7 +111,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
           if (string.length) {
             if (!isRaw) {
-              string = string.replace(escapeRE, escapeFn);
+              string = string.replace(escapeRegExp, escapeFunction);
             }
 
             yield string;
@@ -123,7 +127,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else if (string.length) {
-      string = string.replace(escapeRE, escapeFn);
+      string = string.replace(escapeRegExp, escapeFunction);
     }
 
     if (literal.length || string.length) {
@@ -145,8 +149,8 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
   let index = 0;
 
   for (; index !== expressions.length; ++index) {
-    let literal = literals[index];
     let expression = await expressions[index];
+    let literal = literals[index];
     let string;
 
     if (expression === undefined || expression === null) {
@@ -187,7 +191,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
                 if (string.length) {
                   if (!isRaw) {
-                    string = string.replace(escapeRE, escapeFn);
+                    string = string.replace(escapeRegExp, escapeFunction);
                   }
 
                   yield string;
@@ -202,7 +206,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
           if (string.length) {
             if (!isRaw) {
-              string = string.replace(escapeRE, escapeFn);
+              string = string.replace(escapeRegExp, escapeFunction);
             }
 
             yield string;
@@ -218,7 +222,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else if (string.length) {
-      string = string.replace(escapeRE, escapeFn);
+      string = string.replace(escapeRegExp, escapeFunction);
     }
 
     if (literal.length || string.length) {
