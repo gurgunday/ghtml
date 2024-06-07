@@ -15,6 +15,8 @@ const escapeFunction = (key) => {
   return escapeDictionary[key];
 };
 
+const arrayIsArray = Array.isArray;
+
 /**
  * @param {{ raw: string[] }} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
@@ -32,7 +34,7 @@ const html = ({ raw: literals }, ...expressions) => {
         ? ""
         : typeof expression === "string"
           ? expression
-          : Array.isArray(expression)
+          : arrayIsArray(expression)
             ? expression.join("")
             : `${expression}`;
 
