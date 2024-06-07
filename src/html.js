@@ -8,11 +8,23 @@ const escapeDictionary = {
 
 const escapeRegExp = new RegExp(
   `[${Object.keys(escapeDictionary).join("")}]`,
-  "gu",
+  "u",
 );
 
-const escapeFunction = (key) => {
-  return escapeDictionary[key];
+const escapeFunction = (string) => {
+  let escaped = "";
+  let start = 0;
+  let end = 0;
+
+  for (; end !== string.length; ++end) {
+    const escapedCharacter = escapeDictionary[string[end]];
+    if (escapedCharacter?.length) {
+      escaped += string.slice(start, end) + escapedCharacter;
+      start = end + 1;
+    }
+  }
+
+  return escaped + string.slice(start, end);
 };
 
 /**
@@ -38,8 +50,8 @@ const html = ({ raw: literals }, ...expressions) => {
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length) {
-      string = string.replace(escapeRegExp, escapeFunction);
+    } else if (string.length && escapeRegExp.test(string)) {
+      string = escapeFunction(string);
     }
 
     accumulator += literal + string;
@@ -95,8 +107,8 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                 string = `${expression}`;
 
                 if (string.length) {
-                  if (!isRaw) {
-                    string = string.replace(escapeRegExp, escapeFunction);
+                  if (!isRaw && escapeRegExp.test(string)) {
+                    string = escapeFunction(string);
                   }
 
                   yield string;
@@ -110,8 +122,8 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
           }
 
           if (string.length) {
-            if (!isRaw) {
-              string = string.replace(escapeRegExp, escapeFunction);
+            if (!isRaw && escapeRegExp.test(string)) {
+              string = escapeFunction(string);
             }
 
             yield string;
@@ -126,8 +138,8 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length) {
-      string = string.replace(escapeRegExp, escapeFunction);
+    } else if (string.length && escapeRegExp.test(string)) {
+      string = escapeFunction(string);
     }
 
     if (literal.length || string.length) {
@@ -190,8 +202,8 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
                 string = `${expression}`;
 
                 if (string.length) {
-                  if (!isRaw) {
-                    string = string.replace(escapeRegExp, escapeFunction);
+                  if (!isRaw && escapeRegExp.test(string)) {
+                    string = escapeFunction(string);
                   }
 
                   yield string;
@@ -205,8 +217,8 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
           }
 
           if (string.length) {
-            if (!isRaw) {
-              string = string.replace(escapeRegExp, escapeFunction);
+            if (!isRaw && escapeRegExp.test(string)) {
+              string = escapeFunction(string);
             }
 
             yield string;
@@ -221,8 +233,8 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
     if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length) {
-      string = string.replace(escapeRegExp, escapeFunction);
+    } else if (string.length && escapeRegExp.test(string)) {
+      string = escapeFunction(string);
     }
 
     if (literal.length || string.length) {
