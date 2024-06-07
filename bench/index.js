@@ -9,10 +9,6 @@ let result = "";
 const bench = new Bench({ time: 500 });
 
 // Simple cases
-bench.add("empty template", () => {
-  result = html``;
-});
-
 bench.add("simple HTML formatting", () => {
   result = html`<div>Hello, world!</div>`;
 });
@@ -41,7 +37,7 @@ bench.add("array expressions", () => {
   </ul>`;
 });
 
-const items2 = ["Item 1", "Item 2", "Item 3"];
+const items2 = ["Item 1", "Item <1.5>", "Item 2", "Item <2.5>", "Item 3"];
 bench.add("array expressions with escapable chars", () => {
   result = html`<ul>
     ${items2.map((item) => {
@@ -78,15 +74,6 @@ bench.add("multiple types of expressions", () => {
 const largeString = Array.from({ length: 1000 }).join("Lorem ipsum ");
 bench.add("large strings", () => {
   result = html`<p>${largeString}${largeString}</p>`;
-});
-
-// High iteration count
-const scriptContent =
-  "<script>console.log('This should not execute');</script>";
-bench.add("high iteration count", () => {
-  for (let i = 0; i !== 100; i++) {
-    result = html`<span>${i}: ${scriptContent}</span>`;
-  }
 });
 
 // Escaped and unescaped expressions
