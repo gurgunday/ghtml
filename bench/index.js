@@ -72,6 +72,28 @@ bench.add("unescaped expressions", () => {
   `;
 });
 
+bench.add("escaped expressions", () => {
+  html`
+    <div>${rawHTML}</div>
+    <div>${rawHTML}</div>
+    <div>${markup}</div>
+    <div>${markup}</div>
+    <div>${rawHTML}</div>
+    <div>${rawHTML}</div>
+  `;
+});
+
+bench.add("mixed expressions", () => {
+  html`
+    <div>!${rawHTML}</div>
+    <div>!${rawHTML}</div>
+    <div>${markup}</div>
+    <div>${markup}</div>
+    <div>!${rawHTML}</div>
+    <div>!${rawHTML}</div>
+  `;
+});
+
 await bench.warmup();
 await bench.run();
 
