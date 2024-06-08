@@ -13,9 +13,9 @@ const escapeRegExp = new RegExp(
 
 const escapeFunction = (string) => {
   const stringLength = string.length;
-  let escaped = "";
   let start = 0;
   let end = 0;
+  let escaped = "";
 
   do {
     const escapedCharacter = escapeDictionary[string[end++]];
