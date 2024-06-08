@@ -60,7 +60,7 @@ const html = ({ raw: literals }, ...expressions) => {
     accumulator += literal + string;
   }
 
-  return (accumulator += literals[index]);
+  return accumulator + literals[index];
 };
 
 /**
