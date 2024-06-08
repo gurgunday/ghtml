@@ -36,8 +36,8 @@ const arrayIsArray = Array.isArray;
  * @returns {string} The HTML string.
  */
 const html = ({ raw: literals }, ...expressions) => {
-  let accumulator = "";
   let index = 0;
+  let accumulator = "";
 
   for (; index !== expressions.length; ++index) {
     const expression = expressions[index];
