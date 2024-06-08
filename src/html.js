@@ -16,13 +16,14 @@ const escapeFunction = (string) => {
   let start = 0;
   let end = 0;
 
-  for (; end !== string.length; ++end) {
+  do {
     const escapedCharacter = escapeDictionary[string[end]];
     if (escapedCharacter) {
       escaped += string.slice(start, end) + escapedCharacter;
       start = end + 1;
     }
-  }
+    ++end;
+  } while (end !== string.length);
 
   return escaped + string.slice(start, end);
 };
