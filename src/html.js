@@ -18,7 +18,7 @@ const escapeFunction = (string) => {
 
   for (; end !== string.length; ++end) {
     const escapedCharacter = escapeDictionary[string[end]];
-    if (escapedCharacter?.length) {
+    if (escapedCharacter) {
       escaped += string.slice(start, end) + escapedCharacter;
       start = end + 1;
     }
@@ -50,9 +50,9 @@ const html = ({ raw: literals }, ...expressions) => {
             ? expression.join("")
             : `${expression}`;
 
-    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length && escapeRegExp.test(string)) {
+    } else if (string && escapeRegExp.test(string)) {
       string = escapeFunction(string);
     }
 
@@ -82,13 +82,13 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     } else {
       if (expression[Symbol.iterator]) {
         const isRaw =
-          literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
+          literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
         }
 
-        if (literal.length) {
+        if (literal) {
           yield literal;
         }
 
@@ -108,7 +108,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
                 string = `${expression}`;
 
-                if (string.length) {
+                if (string) {
                   if (!isRaw && escapeRegExp.test(string)) {
                     string = escapeFunction(string);
                   }
@@ -123,7 +123,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
             string = `${expression}`;
           }
 
-          if (string.length) {
+          if (string) {
             if (!isRaw && escapeRegExp.test(string)) {
               string = escapeFunction(string);
             }
@@ -138,18 +138,18 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
       string = `${expression}`;
     }
 
-    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length && escapeRegExp.test(string)) {
+    } else if (string && escapeRegExp.test(string)) {
       string = escapeFunction(string);
     }
 
-    if (literal.length || string.length) {
+    if (literal || string) {
       yield literal + string;
     }
   }
 
-  if (literals[index].length) {
+  if (literals[index]) {
     yield literals[index];
   }
 };
@@ -174,13 +174,13 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     } else {
       if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
         const isRaw =
-          literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
+          literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
         }
 
-        if (literal.length) {
+        if (literal) {
           yield literal;
         }
 
@@ -203,7 +203,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
                 string = `${expression}`;
 
-                if (string.length) {
+                if (string) {
                   if (!isRaw && escapeRegExp.test(string)) {
                     string = escapeFunction(string);
                   }
@@ -218,7 +218,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
             string = `${expression}`;
           }
 
-          if (string.length) {
+          if (string) {
             if (!isRaw && escapeRegExp.test(string)) {
               string = escapeFunction(string);
             }
@@ -233,18 +233,18 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
       string = `${expression}`;
     }
 
-    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length && escapeRegExp.test(string)) {
+    } else if (string && escapeRegExp.test(string)) {
       string = escapeFunction(string);
     }
 
-    if (literal.length || string.length) {
+    if (literal || string) {
       yield literal + string;
     }
   }
 
-  if (literals[index].length) {
+  if (literals[index]) {
     yield literals[index];
   }
 };
