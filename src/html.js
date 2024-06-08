@@ -12,18 +12,18 @@ const escapeRegExp = new RegExp(
 );
 
 const escapeFunction = (string) => {
+  const stringLength = string.length;
   let escaped = "";
   let start = 0;
   let end = 0;
 
   do {
-    const escapedCharacter = escapeDictionary[string[end]];
+    const escapedCharacter = escapeDictionary[string[end++]];
     if (escapedCharacter) {
-      escaped += string.slice(start, end) + escapedCharacter;
-      start = end + 1;
+      escaped += string.slice(start, end - 1) + escapedCharacter;
+      start = end;
     }
-    ++end;
-  } while (end !== string.length);
+  } while (end !== stringLength);
 
   return escaped + string.slice(start, end);
 };
