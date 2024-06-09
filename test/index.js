@@ -174,7 +174,7 @@ test("htmlGenerator works with nested htmlGenerator calls in an array", () => {
   assert.strictEqual(generator.next().done, true);
 });
 
-test("htmlGenerator works with other generators", () => {
+test("htmlGenerator works with other generators (raw)", () => {
   const generator = htmlGenerator`<div>!${generatorExample()}</div>`;
   let accumulator = "";
 
@@ -185,6 +185,21 @@ test("htmlGenerator works with other generators", () => {
   assert.strictEqual(
     accumulator,
     "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>12345255</p></div>",
+  );
+  assert.strictEqual(generator.next().done, true);
+});
+
+test("htmlGenerator works with other generators (escaped)", () => {
+  const generator = htmlGenerator`<div>${generatorExample()}</div>`;
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255&lt;/p&gt;</div>",
   );
   assert.strictEqual(generator.next().done, true);
 });
@@ -244,6 +259,34 @@ test("htmlAsyncGenerator renders unsafe content", async () => {
   assert.strictEqual(
     accumulator,
     "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255</p>",
+  );
+});
+
+test("htmlAsyncGenerator works with other generators (raw)", async () => {
+  const generator = htmlAsyncGenerator`<div>!${generatorExample()}</div>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>12345255</p></div>",
+  );
+});
+
+test("htmlAsyncGenerator works with other generators (escaped)", async () => {
+  const generator = htmlAsyncGenerator`<div>${generatorExample()}</div>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(
+    accumulator,
+    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255&lt;/p&gt;</div>",
   );
 });
 
