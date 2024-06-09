@@ -19,7 +19,6 @@ const escapeFunction = (string) => {
 
   do {
     const escapedCharacter = escapeDictionary[string[end++]];
-
     if (escapedCharacter) {
       escaped += string.slice(start, end - 1) + escapedCharacter;
       start = end;
@@ -37,10 +36,11 @@ const arrayIsArray = Array.isArray;
  * @returns {string} The HTML string.
  */
 const html = ({ raw: literals }, ...expressions) => {
+  const expressionsLength = expressions.length;
   let index = 0;
   let accumulator = "";
 
-  for (; index !== expressions.length; ++index) {
+  for (; index !== expressionsLength; ++index) {
     const expression = expressions[index];
     let literal = literals[index];
     let string =
@@ -70,9 +70,10 @@ const html = ({ raw: literals }, ...expressions) => {
  * @yields {string} The HTML strings.
  */
 const htmlGenerator = function* ({ raw: literals }, ...expressions) {
+  const expressionsLength = expressions.length;
   let index = 0;
 
-  for (; index !== expressions.length; ++index) {
+  for (; index !== expressionsLength; ++index) {
     let expression = expressions[index];
     let literal = literals[index];
     let string;
@@ -162,9 +163,10 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
  * @yields {string} The HTML strings.
  */
 const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
+  const expressionsLength = expressions.length;
   let index = 0;
 
-  for (; index !== expressions.length; ++index) {
+  for (; index !== expressionsLength; ++index) {
     let expression = await expressions[index];
     let literal = literals[index];
     let string;
