@@ -4,7 +4,7 @@ Inspired by [html-template-tag](https://github.com/AntonioVdlC/html-template-tag
 
 ## Installation
 
-```shell
+```sh
 npm i ghtml
 ```
 
@@ -24,9 +24,9 @@ Keep in mind that, in Node.js, all else being equal, streaming a response using 
 
 ### `htmlAsyncGenerator`
 
-This version of HTML generator should be preferred for asynchronous use cases. The output will be generated as the promise expressions resolve.
+This version of HTML generator should be preferred for asynchronous and streaming use cases. The output will be generated as the promise expressions resolve or stream expressions send data.
 
-**Note:**
+**Minor Note:**
 
 Because they return generators instead of strings, a key difference of `htmlGenerator` and `htmlAsyncGenerator` is their ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` and `htmlAsyncGenerator` usage, enabling scenarios such as ``${[1, 2, 3].map(i => htmlGenerator`<li>${i}</li>`)}``.
 
@@ -134,11 +134,12 @@ import { Readable } from "node:stream";
 import http from "node:http";
 
 const asyncGenerator = async function* () {
-  const helloWorld = await new Promise((resolve) => {
+  const helloWorld = new Promise((resolve) => {
     setTimeout(() => {
-      resolve("Hello, World!");
-    }, 1000);
+      resolve("<br /><br />Hello, World!");
+    }, 2500);
   });
+  yield await readFile("./.gitignore", "utf8");
   yield helloWorld;
 };
 
@@ -146,7 +147,7 @@ http
   .createServer((req, res) => {
     const htmlContent = html`<!doctype html>
       <html>
-        <p>${asyncGenerator()}</p>
+        <p>!${asyncGenerator()}</p>
         <code>${readFile("./README.md", "utf8")}</code>
         <code>${createReadStream("./README.md", "utf8")}</code>
       </html>`;
