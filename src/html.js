@@ -19,7 +19,6 @@ const escapeFunction = (string) => {
 
   do {
     const escapedCharacter = escapeDictionary[string[end++]];
-
     if (escapedCharacter) {
       escaped += string.slice(start, end - 1) + escapedCharacter;
       start = end;
