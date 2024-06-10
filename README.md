@@ -20,11 +20,11 @@ The `htmlGenerator` function acts as the generator version of the `html` functio
 
 **Note:**
 
-Keep in mind that, in Node.js, all else being equal, streaming a response using synchronous generators will **always** be slower than processing everything directly and sending it at once — [this also applies to TTFB](https://github.com/mcollina/fastify-html/issues/11#issuecomment-2069385895). However, if a template includes promises that do asynchronous operations (I/O, etc.), then `htmlAsyncGenerator` can be used to stream the response as those promises get resolved, which will indeed improve TTFB.
+Keep in mind that, in Node.js, all else being equal, streaming a response using synchronous generators is **always** slower than processing everything directly and sending it at once — [this also applies to TTFB](https://github.com/mcollina/fastify-html/issues/11#issuecomment-2069385895). However, if a template includes promises that do asynchronous operations (I/O, etc.), then `htmlAsyncGenerator` can be used to stream the response as those promises get resolved, which does indeed improve TTFB.
 
 ### `htmlAsyncGenerator`
 
-This version of HTML generator should be preferred for asynchronous and streaming use cases. The output will be generated as the promise expressions resolve or stream expressions send data.
+This version of HTML generator should be preferred for asynchronous and streaming use cases. The output is generated as the promise expressions resolve or stream expressions send data.
 
 **Minor Note:**
 
@@ -42,7 +42,7 @@ Available in Node.js, the `includeFile` function is a wrapper around `readFileSy
 import { html } from "ghtml";
 
 const username = '<img src="https://example.com/pwned.png">';
-const greeting = html`<h1>Hello, ${username}!</h1>`;
+const greeting = html`<h1>Hello, ${username}</h1>`;
 
 console.log(greeting);
 // Output: <h1>Hello, &#60;img src=&#34;https://example.com/pwned.png&#34;&#62;</h1>
@@ -58,7 +58,7 @@ console.log(container);
 // Output: <div><img src="https://example.com/safe.png"></div>
 ```
 
-When nesting multiple `html` expressions, always use `!` as they will do their own escaping:
+When nesting multiple `html` expressions, make sure to use `!` as the inner calls do their own escaping:
 
 ```js
 const someCondition = Math.random() >= 0.5;
@@ -171,4 +171,4 @@ console.log(logo);
 
 ## Security
 
-Like [similar](https://handlebarsjs.com/guide/#html-escaping) [tools](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities), `ghtml` will not prevent all kinds of XSS attacks. It is the responsibility of consumers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and using unsanitized user-provided URLs.
+Like [similar](https://handlebarsjs.com/guide/#html-escaping) [tools](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities), `ghtml` does not prevent all kinds of XSS attacks. It is the responsibility of consumers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and using unsanitized user-provided URLs.
