@@ -59,14 +59,14 @@ test("renders safe content", () => {
 test("renders unsafe content", () => {
   assert.strictEqual(
     html`<p>${descriptionUnsafe}</p>`,
-    `<p>&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;</p>`,
+    `<p>&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;</p>`,
   );
 });
 
 test("renders arrays", () => {
   assert.strictEqual(
     html`<p>${[descriptionSafe, descriptionUnsafe]}</p>`,
-    "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;</p>",
+    "<p>This is a safe description.&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;</p>",
   );
 });
 
@@ -81,7 +81,7 @@ test("renders nested html calls", () => {
   // prettier-ignore
   assert.strictEqual(
     html`<p>!${conditionTrue ? html`<strong>${descriptionUnsafe}</strong>` : ""}</p>`,
-    "<p><strong>&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;</strong></p>",
+    "<p><strong>&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;</strong></p>",
   );
 });
 
@@ -156,7 +156,7 @@ test("htmlGenerator renders unsafe content", () => {
 
   assert.strictEqual(
     accumulator,
-    "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255</p>",
+    "<p>This is a safe description.&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;12345255</p>",
   );
 });
 
@@ -199,7 +199,7 @@ test("htmlGenerator works with other generators (escaped)", () => {
 
   assert.strictEqual(
     accumulator,
-    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255&lt;/p&gt;</div>",
+    "<div>&#60;p&#62;This is a safe description.&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;12345255&#60;/p&#62;</div>",
   );
   assert.strictEqual(generator.next().done, true);
 });
@@ -229,7 +229,7 @@ test("htmlGenerator works with other generators within an array (escaped)", () =
 
   assert.strictEqual(
     accumulator,
-    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;1,2,3,4,5255&lt;/p&gt;</div>",
+    "<div>&#60;p&#62;This is a safe description.&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;1,2,3,4,5255&#60;/p&#62;</div>",
   );
   assert.strictEqual(generator.next().done, true);
 });
@@ -258,7 +258,7 @@ test("htmlAsyncGenerator renders unsafe content", async () => {
 
   assert.strictEqual(
     accumulator,
-    "<p>This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255</p>",
+    "<p>This is a safe description.&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;12345255</p>",
   );
 });
 
@@ -286,7 +286,7 @@ test("htmlAsyncGenerator works with other generators (escaped)", async () => {
 
   assert.strictEqual(
     accumulator,
-    "<div>&lt;p&gt;This is a safe description.&lt;script&gt;alert(&apos;This is an unsafe description.&apos;)&lt;/script&gt;12345255&lt;/p&gt;</div>",
+    "<div>&#60;p&#62;This is a safe description.&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;12345255&#60;/p&#62;</div>",
   );
 });
 
@@ -302,7 +302,7 @@ test("htmlAsyncGenerator works with nested htmlAsyncGenerator calls in an array"
 
   assert.strictEqual(
     accumulator.replaceAll("\n", "").trim(),
-    "1: <p># test.md&gt;</p>2: <p># test.md&gt;</p>3: <p># test.md&gt;</p>",
+    "1: <p># test.md&#62;</p>2: <p># test.md&#62;</p>3: <p># test.md&#62;</p>",
   );
 });
 
@@ -312,7 +312,7 @@ test("htmlAsyncGenerator renders chunks with promises (escaped)", async () => {
   })}</ul>`;
   const fileContent = readFileSync("test/test.md", "utf8").replaceAll(
     ">",
-    "&gt;",
+    "&#62;",
   );
 
   let value = await generator.next();
@@ -372,7 +372,7 @@ test("htmlAsyncGenerator redners in chuncks", async () => {
   assert.strictEqual(value.value, "<ul>");
 
   value = await generator.next();
-  assert.strictEqual(value.value, "&lt;p&gt;");
+  assert.strictEqual(value.value, "&#60;p&#62;");
 
   value = await generator.next();
   assert.strictEqual(value.value, "12");

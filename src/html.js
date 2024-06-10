@@ -1,9 +1,10 @@
 const escapeDictionary = {
-  '"': "&quot;",
-  "'": "&apos;",
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
+  '"': "&#34;",
+  "&": "&#38;",
+  "'": "&#39;",
+  "<": "&#60;",
+  ">": "&#62;",
+  "`": "&#96;",
 };
 
 const escapeRegExp = new RegExp(
@@ -19,6 +20,7 @@ const escapeFunction = (string) => {
 
   do {
     const escapedCharacter = escapeDictionary[string[end++]];
+
     if (escapedCharacter) {
       escaped += string.slice(start, end - 1) + escapedCharacter;
       start = end;

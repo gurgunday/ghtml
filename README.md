@@ -12,7 +12,7 @@ npm i ghtml
 
 ### `html`
 
-The `html` function is designed to tag template literals and automatically escape their expressions to prevent XSS attacks. To intentionally bypass escaping for a specific expression, prefix it with `!`.
+The `html` function is designed to tag template literals and automatically escape their expressions. To intentionally bypass escaping a specific expression, prefix it with `!`.
 
 ### `htmlGenerator`
 
@@ -32,7 +32,7 @@ Because they return generators instead of strings, a key difference of `htmlGene
 
 ### `includeFile`
 
-Available for Node.js users, the `includeFile` function is a wrapper around `readFileSync`. It reads and outputs the content of a file while also caching it in memory for faster future reuse.
+Available in Node.js, the `includeFile` function is a wrapper around `readFileSync`. It reads and outputs the content of a file while also caching it in memory for faster future reuse.
 
 ## Usage
 
@@ -41,11 +41,11 @@ Available for Node.js users, the `includeFile` function is a wrapper around `rea
 ```js
 import { html } from "ghtml";
 
-const username = '<img src="https://example.com/hacker.png">';
+const username = '<img src="https://example.com/pwned.png">';
 const greeting = html`<h1>Hello, ${username}!</h1>`;
 
 console.log(greeting);
-// Output: <h1>Hello, &lt;img src=&quot;https://example.com/hacker.png&quot;&gt;</h1>
+// Output: <h1>Hello, &#60;img src=&#34;https://example.com/pwned.png&#34;&#62;</h1>
 ```
 
 To bypass escaping:
@@ -168,3 +168,7 @@ const logo = includeFile("static/logo.svg");
 console.log(logo);
 // Output: content of "static/logo.svg"
 ```
+
+## Security
+
+Like [similar](https://handlebarsjs.com/guide/#html-escaping) [tools](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities), `ghtml` will not prevent all kinds of XSS attacks. It is the responsibility of consumers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and using unsanitized user-provided URLs.
