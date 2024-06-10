@@ -44,10 +44,10 @@ const html = ({ raw: literals }, ...expressions) => {
     const expression = expressions[index];
     let literal = literals[index];
     let string =
-      expression === undefined || expression === null
-        ? ""
-        : typeof expression === "string"
-          ? expression
+      typeof expression === "string"
+        ? expression
+        : expression === undefined || expression === null
+          ? ""
           : arrayIsArray(expression)
             ? expression.join("")
             : `${expression}`;
@@ -78,10 +78,10 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     let literal = literals[index];
     let string;
 
-    if (expression === undefined || expression === null) {
-      string = "";
-    } else if (typeof expression === "string") {
+    if (typeof expression === "string") {
       string = expression;
+    } else if (expression === undefined || expression === null) {
+      string = "";
     } else {
       if (expression[Symbol.iterator]) {
         const isRaw =
@@ -96,13 +96,13 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
         }
 
         for (expression of expression) {
-          if (expression === undefined || expression === null) {
-            continue;
-          }
-
           if (typeof expression === "string") {
             string = expression;
           } else {
+            if (expression === undefined || expression === null) {
+              continue;
+            }
+
             if (expression[Symbol.iterator]) {
               for (expression of expression) {
                 if (expression === undefined || expression === null) {
@@ -171,10 +171,10 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     let literal = literals[index];
     let string;
 
-    if (expression === undefined || expression === null) {
-      string = "";
-    } else if (typeof expression === "string") {
+    if (typeof expression === "string") {
       string = expression;
+    } else if (expression === undefined || expression === null) {
+      string = "";
     } else {
       if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
         const isRaw =
@@ -189,13 +189,13 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
         }
 
         for await (expression of expression) {
-          if (expression === undefined || expression === null) {
-            continue;
-          }
-
           if (typeof expression === "string") {
             string = expression;
           } else {
+            if (expression === undefined || expression === null) {
+              continue;
+            }
+
             if (
               expression[Symbol.iterator] ||
               expression[Symbol.asyncIterator]
