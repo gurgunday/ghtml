@@ -78,7 +78,7 @@ const htmlString = html`
             )}
           </ul>
         `
-      : "<p>No data...</p>"}
+      : html`<p>No data...</p>`}
   </div>
 `;
 ```
