@@ -107,11 +107,15 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
             if (expression[Symbol.iterator]) {
               for (expression of expression) {
-                if (expression === undefined || expression === null) {
-                  continue;
-                }
+                if (typeof expression === "string") {
+                  string = expression;
+                } else {
+                  if (expression === undefined || expression === null) {
+                    continue;
+                  }
 
-                string = `${expression}`;
+                  string = `${expression}`;
+                }
 
                 if (string) {
                   if (!isRaw && escapeRegExp.test(string)) {
@@ -203,11 +207,15 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
               expression[Symbol.asyncIterator]
             ) {
               for await (expression of expression) {
-                if (expression === undefined || expression === null) {
-                  continue;
-                }
+                if (typeof expression === "string") {
+                  string = expression;
+                } else {
+                  if (expression === undefined || expression === null) {
+                    continue;
+                  }
 
-                string = `${expression}`;
+                  string = `${expression}`;
+                }
 
                 if (string) {
                   if (!isRaw && escapeRegExp.test(string)) {
