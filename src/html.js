@@ -1,3 +1,9 @@
+const arrayIsArray = Array.isArray;
+
+const symbolIterator = Symbol.iterator;
+
+const symbolAsyncIterator = Symbol.asyncIterator;
+
 const escapeDictionary = {
   '"': "&#34;",
   "&": "&#38;",
@@ -7,10 +13,7 @@ const escapeDictionary = {
   "`": "&#96;",
 };
 
-const escapeRegExp = new RegExp(
-  `[${Object.keys(escapeDictionary).join("")}]`,
-  "u",
-);
+const escapeRegExp = new RegExp(`[${Object.keys(escapeDictionary).join("")}]`);
 
 const escapeFunction = (string) => {
   const stringLength = string.length;
@@ -29,8 +32,6 @@ const escapeFunction = (string) => {
 
   return escaped + string.slice(start, end);
 };
-
-const arrayIsArray = Array.isArray;
 
 /**
  * @param {{ raw: string[] }} literals Tagged template literals.
@@ -85,7 +86,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     } else if (expression === undefined || expression === null) {
       string = "";
     } else {
-      if (expression[Symbol.iterator]) {
+      if (expression[symbolIterator]) {
         const isRaw =
           literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -105,7 +106,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
               continue;
             }
 
-            if (expression[Symbol.iterator]) {
+            if (expression[symbolIterator]) {
               for (expression of expression) {
                 if (typeof expression === "string") {
                   string = expression;
@@ -182,7 +183,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     } else if (expression === undefined || expression === null) {
       string = "";
     } else {
-      if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
+      if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
         const isRaw =
           literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -202,10 +203,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
               continue;
             }
 
-            if (
-              expression[Symbol.iterator] ||
-              expression[Symbol.asyncIterator]
-            ) {
+            if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
               for await (expression of expression) {
                 if (typeof expression === "string") {
                   string = expression;
