@@ -32,7 +32,7 @@ Because they return generators instead of strings, a key difference of `htmlGene
 
 ### `includeFile`
 
-Available in Node.js, the `includeFile` function is a wrapper around `readFileSync`. It reads and outputs the content of a file while also caching it in memory for faster future reuse.
+Available in Node.js, the `includeFile` function is a wrapper around `readFileSync`. It reads and returns the content of a file while also caching it in memory for faster future reuse.
 
 ## Usage
 
@@ -171,4 +171,4 @@ console.log(logo);
 
 ## Security
 
-Like [similar](https://handlebarsjs.com/guide/#html-escaping) [tools](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities), `ghtml` does not prevent all kinds of XSS attacks. It is the responsibility of consumers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and using unsanitized user-provided URLs.
+Like [similar](https://handlebarsjs.com/guide/#html-escaping) [tools](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities), `ghtml` does not prevent all kinds of XSS attacks. It is the responsibility of consumers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and having unsanitized user-provided URLs.
