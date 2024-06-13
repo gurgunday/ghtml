@@ -55,7 +55,7 @@ const html = ({ raw: literals }, ...expressions) => {
             ? expression.join("")
             : `${expression}`;
 
-    if (literal && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal && literal[literal.length - 1] === "!") {
       literal = literal.slice(0, -1);
     } else if (string && escapeRegExp.test(string)) {
       string = escapeFunction(string);
@@ -87,8 +87,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
       string = "";
     } else {
       if (expression[symbolIterator]) {
-        const isRaw =
-          literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
+        const isRaw = literal !== "" && literal[literal.length - 1] === "!";
 
         if (isRaw) {
           literal = literal.slice(0, -1);
@@ -148,7 +147,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
       string = `${expression}`;
     }
 
-    if (literal && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal && literal[literal.length - 1] === "!") {
       literal = literal.slice(0, -1);
     } else if (string && escapeRegExp.test(string)) {
       string = escapeFunction(string);
@@ -184,8 +183,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
       string = "";
     } else {
       if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
-        const isRaw =
-          literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
+        const isRaw = literal !== "" && literal[literal.length - 1] === "!";
 
         if (isRaw) {
           literal = literal.slice(0, -1);
@@ -245,7 +243,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
       string = `${expression}`;
     }
 
-    if (literal && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal && literal[literal.length - 1] === "!") {
       literal = literal.slice(0, -1);
     } else if (string && escapeRegExp.test(string)) {
       string = escapeFunction(string);
