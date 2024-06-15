@@ -9,4 +9,4 @@
 
 ## Reporting a Vulnerability
 
-Please report all vulnerabilities to [https://github.com/gurgunday/ghtml/security](https://github.com/gurgunday/ghtml/security)
+Please report all vulnerabilities to [https://github.com/gurgunday/ghtml/security](https://github.com/gurgunday/ghtml/security).
