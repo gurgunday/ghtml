@@ -8,7 +8,7 @@ Inspired by [html-template-tag](https://github.com/AntonioVdlC/html-template-tag
 npm i ghtml
 ```
 
-## API Reference
+## API
 
 ### `html`
 
@@ -26,7 +26,7 @@ Keep in mind that, in Node.js, all else being equal, streaming a response using 
 
 This version of HTML generator should be preferred for asynchronous and streaming use cases. The output is generated as the promise expressions resolve or stream expressions send data.
 
-**Minor Note:**
+**Note:**
 
 Because they return generators instead of strings, a key difference of `htmlGenerator` and `htmlAsyncGenerator` is their ability to recognize and properly handle iterable elements within array expressions. This is to detect nested `htmlGenerator` and `htmlAsyncGenerator` usage, enabling scenarios such as ``${[1, 2, 3].map(i => htmlGenerator`<li>${i}</li>`)}``.
 
@@ -171,4 +171,4 @@ console.log(logo);
 
 ## Security
 
-Like [similar](https://handlebarsjs.com/guide/#html-escaping) [tools](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities), `ghtml` does not prevent all kinds of XSS attacks. It is the responsibility of consumers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and having unsanitized user-provided URLs.
+Like [similar](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities) [tools](https://handlebarsjs.com/guide/#html-escaping), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and relying on unsanitized user-provided URLs.
