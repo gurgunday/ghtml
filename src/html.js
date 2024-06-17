@@ -4,33 +4,47 @@ const symbolIterator = Symbol.iterator;
 
 const symbolAsyncIterator = Symbol.asyncIterator;
 
-const escapeDictionary = {
-  '"': "&#34;",
-  "&": "&#38;",
-  "'": "&#39;",
-  "<": "&#60;",
-  ">": "&#62;",
-  "`": "&#96;",
-};
-
-const escapeRegExp = new RegExp(`[${Object.keys(escapeDictionary).join("")}]`);
+const escapeRegExp = /["&'<>`]/;
 
 const escapeFunction = (string) => {
+  const stringCharCodeAt = string.charCodeAt.bind(string);
   const stringLength = string.length;
   let start = 0;
   let end = 0;
   let escaped = "";
 
   do {
-    const escapedCharacter = escapeDictionary[string[end++]];
-
-    if (escapedCharacter) {
-      escaped += string.slice(start, end - 1) + escapedCharacter;
-      start = end;
+    switch (stringCharCodeAt(end++)) {
+      case 34: // "
+        escaped += string.slice(start, end - 1) + "&#34;";
+        start = end;
+        continue;
+      case 38: // &
+        escaped += string.slice(start, end - 1) + "&#38;";
+        start = end;
+        continue;
+      case 39: // '
+        escaped += string.slice(start, end - 1) + "&#39;";
+        start = end;
+        continue;
+      case 60: // <
+        escaped += string.slice(start, end - 1) + "&#60;";
+        start = end;
+        continue;
+      case 62: // >
+        escaped += string.slice(start, end - 1) + "&#62;";
+        start = end;
+        continue;
+      case 96: // `
+        escaped += string.slice(start, end - 1) + "&#96;";
+        start = end;
+        continue;
     }
   } while (end !== stringLength);
 
-  return escaped + string.slice(start, end);
+  escaped += string.slice(start, end);
+
+  return escaped;
 };
 
 /**
@@ -64,7 +78,9 @@ const html = ({ raw: literals }, ...expressions) => {
     accumulator += literal + string;
   }
 
-  return accumulator + literals[index];
+  accumulator += literals[index];
+
+  return accumulator;
 };
 
 /**

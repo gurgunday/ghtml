@@ -3,6 +3,7 @@
   "extends": ["plugin:grules/all"],
   "rules": {
     "no-await-in-loop": "off",
+    "prefer-template": "off",
     "require-unicode-regexp": "off"
   }
 }
