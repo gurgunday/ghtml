@@ -49,7 +49,7 @@ const html = ({ raw: literals }, ...expressions) => {
     let string =
       typeof expression === "string"
         ? expression
-        : expression === undefined || expression === null
+        : expression == null
           ? ""
           : arrayIsArray(expression)
             ? expression.join("")
@@ -83,7 +83,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (typeof expression === "string") {
       string = expression;
-    } else if (expression === undefined || expression === null) {
+    } else if (expression == null) {
       string = "";
     } else {
       if (expression[symbolIterator]) {
@@ -102,7 +102,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
           if (typeof expression === "string") {
             string = expression;
           } else {
-            if (expression === undefined || expression === null) {
+            if (expression == null) {
               continue;
             }
 
@@ -111,7 +111,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                 if (typeof expression === "string") {
                   string = expression;
                 } else {
-                  if (expression === undefined || expression === null) {
+                  if (expression == null) {
                     continue;
                   }
 
@@ -180,7 +180,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
     if (typeof expression === "string") {
       string = expression;
-    } else if (expression === undefined || expression === null) {
+    } else if (expression == null) {
       string = "";
     } else {
       if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
@@ -199,7 +199,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
           if (typeof expression === "string") {
             string = expression;
           } else {
-            if (expression === undefined || expression === null) {
+            if (expression == null) {
               continue;
             }
 
@@ -208,7 +208,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
                 if (typeof expression === "string") {
                   string = expression;
                 } else {
-                  if (expression === undefined || expression === null) {
+                  if (expression == null) {
                     continue;
                   }
 
