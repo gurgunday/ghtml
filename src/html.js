@@ -6,8 +6,12 @@ const symbolAsyncIterator = Symbol.asyncIterator;
 
 const escapeRegExp = /["&'<>`]/;
 
+const escapeRegExpTest = escapeRegExp.test.bind(escapeRegExp);
+
 const escapeFunction = (string) => {
   const stringCharCodeAt = string.charCodeAt.bind(string);
+  const stringSlice = string.slice.bind(string);
+
   const stringLength = string.length;
   let start = 0;
   let end = 0;
@@ -16,33 +20,33 @@ const escapeFunction = (string) => {
   do {
     switch (stringCharCodeAt(end++)) {
       case 34: // "
-        escaped += string.slice(start, end - 1) + "&#34;";
+        escaped += stringSlice(start, end - 1) + "&#34;";
         start = end;
         continue;
       case 38: // &
-        escaped += string.slice(start, end - 1) + "&#38;";
+        escaped += stringSlice(start, end - 1) + "&#38;";
         start = end;
         continue;
       case 39: // '
-        escaped += string.slice(start, end - 1) + "&#39;";
+        escaped += stringSlice(start, end - 1) + "&#39;";
         start = end;
         continue;
       case 60: // <
-        escaped += string.slice(start, end - 1) + "&#60;";
+        escaped += stringSlice(start, end - 1) + "&#60;";
         start = end;
         continue;
       case 62: // >
-        escaped += string.slice(start, end - 1) + "&#62;";
+        escaped += stringSlice(start, end - 1) + "&#62;";
         start = end;
         continue;
       case 96: // `
-        escaped += string.slice(start, end - 1) + "&#96;";
+        escaped += stringSlice(start, end - 1) + "&#96;";
         start = end;
         continue;
     }
   } while (end !== stringLength);
 
-  escaped += string.slice(start, end);
+  escaped += stringSlice(start, end);
 
   return escaped;
 };
@@ -71,7 +75,7 @@ const html = ({ raw: literals }, ...expressions) => {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
+    } else if (string && escapeRegExpTest(string)) {
       string = escapeFunction(string);
     }
 
@@ -135,7 +139,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                 }
 
                 if (string) {
-                  if (!isRaw && escapeRegExp.test(string)) {
+                  if (!isRaw && escapeRegExpTest(string)) {
                     string = escapeFunction(string);
                   }
 
@@ -150,7 +154,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
           }
 
           if (string) {
-            if (!isRaw && escapeRegExp.test(string)) {
+            if (!isRaw && escapeRegExpTest(string)) {
               string = escapeFunction(string);
             }
 
@@ -166,7 +170,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
+    } else if (string && escapeRegExpTest(string)) {
       string = escapeFunction(string);
     }
 
@@ -232,7 +236,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
                 }
 
                 if (string) {
-                  if (!isRaw && escapeRegExp.test(string)) {
+                  if (!isRaw && escapeRegExpTest(string)) {
                     string = escapeFunction(string);
                   }
 
@@ -247,7 +251,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
           }
 
           if (string) {
-            if (!isRaw && escapeRegExp.test(string)) {
+            if (!isRaw && escapeRegExpTest(string)) {
               string = escapeFunction(string);
             }
 
@@ -263,7 +267,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
+    } else if (string && escapeRegExpTest(string)) {
       string = escapeFunction(string);
     }
 
