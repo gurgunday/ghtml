@@ -1,11 +1,8 @@
 const arrayIsArray = Array.isArray;
-
 const symbolIterator = Symbol.iterator;
-
 const symbolAsyncIterator = Symbol.asyncIterator;
 
 const escapeRegExp = /["&'<>`]/;
-
 const escapeFunction = (string) => {
   const stringLength = string.length;
   let start = 0;
