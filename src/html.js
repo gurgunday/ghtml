@@ -5,13 +5,11 @@ const symbolIterator = Symbol.iterator;
 const symbolAsyncIterator = Symbol.asyncIterator;
 
 const escapeRegExp = /["&'<>`]/;
-
 const escapeRegExpTest = escapeRegExp.test.bind(escapeRegExp);
 
 const escapeFunction = (string) => {
   const stringCharCodeAt = string.charCodeAt.bind(string);
   const stringSlice = string.slice.bind(string);
-
   const stringLength = string.length;
   let start = 0;
   let end = 0;
