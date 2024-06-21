@@ -5,37 +5,42 @@ const symbolAsyncIterator = Symbol.asyncIterator;
 const escapeRegExp = /["&'<>`]/;
 const escapeFunction = (string) => {
   const stringLength = string.length;
+
+  if (stringLength === 0 || !escapeRegExp.test(string)) {
+    return string;
+  }
+
   let start = 0;
   let end = 0;
   let escaped = "";
 
   do {
-    const charCode = string.charCodeAt(end++);
-
-    switch (charCode) {
+    switch (string.charCodeAt(end++)) {
       case 34: // "
         escaped += string.slice(start, end - 1) + "&#34;";
-        break;
+        start = end;
+        continue;
       case 38: // &
         escaped += string.slice(start, end - 1) + "&#38;";
-        break;
+        start = end;
+        continue;
       case 39: // '
         escaped += string.slice(start, end - 1) + "&#39;";
-        break;
+        start = end;
+        continue;
       case 60: // <
         escaped += string.slice(start, end - 1) + "&#60;";
-        break;
+        start = end;
+        continue;
       case 62: // >
         escaped += string.slice(start, end - 1) + "&#62;";
-        break;
+        start = end;
+        continue;
       case 96: // `
         escaped += string.slice(start, end - 1) + "&#96;";
-        break;
-      default:
+        start = end;
         continue;
     }
-
-    start = end;
   } while (end !== stringLength);
 
   escaped += string.slice(start, end);
@@ -67,7 +72,7 @@ const html = ({ raw: literals }, ...expressions) => {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
+    } else {
       string = escapeFunction(string);
     }
 
@@ -162,7 +167,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
+    } else {
       string = escapeFunction(string);
     }
 
