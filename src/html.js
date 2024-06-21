@@ -10,32 +10,32 @@ const escapeFunction = (string) => {
   let escaped = "";
 
   do {
-    switch (string.charCodeAt(end++)) {
+    const charCode = string.charCodeAt(end++);
+
+    switch (charCode) {
       case 34: // "
         escaped += string.slice(start, end - 1) + "&#34;";
-        start = end;
-        continue;
+        break;
       case 38: // &
         escaped += string.slice(start, end - 1) + "&#38;";
-        start = end;
-        continue;
+        break;
       case 39: // '
         escaped += string.slice(start, end - 1) + "&#39;";
-        start = end;
-        continue;
+        break;
       case 60: // <
         escaped += string.slice(start, end - 1) + "&#60;";
-        start = end;
-        continue;
+        break;
       case 62: // >
         escaped += string.slice(start, end - 1) + "&#62;";
-        start = end;
-        continue;
+        break;
       case 96: // `
         escaped += string.slice(start, end - 1) + "&#96;";
-        start = end;
+        break;
+      default:
         continue;
     }
+
+    start = end;
   } while (end !== stringLength);
 
   escaped += string.slice(start, end);
