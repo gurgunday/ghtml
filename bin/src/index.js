@@ -17,7 +17,7 @@ const parseArguments = (args) => {
 
   if (!roots || !refs) {
     console.error(
-      'Usage: npx hasset --roots="path/to/scan/assets1/,path/to/scan/assets2/" --refs="views/path/to/append/hashes1/,views/path/to/append/hashes2/"',
+      'Usage: npx ghtml --roots="path/to/scan/assets1/,path/to/scan/assets2/" --refs="views/path/to/append/hashes1/,views/path/to/append/hashes2/"',
     );
     process.exit(1);
   }
