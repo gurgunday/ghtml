@@ -1,4 +1,4 @@
-Replace your template engine with fast JavaScript by leveraging the power of [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
+ta**ghtml** lets you replace your template engine with fast JavaScript by leveraging the power of [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
 
 Inspired by [html-template-tag](https://github.com/AntonioVdlC/html-template-tag).
 

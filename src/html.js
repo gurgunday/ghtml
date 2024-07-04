@@ -1,3 +1,7 @@
+const arrayIsArray = Array.isArray;
+const symbolIterator = Symbol.iterator;
+const symbolAsyncIterator = Symbol.asyncIterator;
+
 const escapeRegExp = /["&'<>`]/;
 const escapeFunction = (string) => {
   const stringLength = string.length;
@@ -57,7 +61,7 @@ const html = ({ raw: literals }, ...expressions) => {
         ? expression
         : expression == null
           ? ""
-          : Array.isArray(expression)
+          : arrayIsArray(expression)
             ? expression.join("")
             : `${expression}`;
 
@@ -94,7 +98,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     } else if (expression == null) {
       string = "";
     } else {
-      if (expression[Symbol.iterator]) {
+      if (expression[symbolIterator]) {
         const isRaw =
           literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -114,7 +118,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
               continue;
             }
 
-            if (expression[Symbol.iterator]) {
+            if (expression[symbolIterator]) {
               for (expression of expression) {
                 if (typeof expression === "string") {
                   string = expression;
@@ -191,7 +195,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     } else if (expression == null) {
       string = "";
     } else {
-      if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
+      if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
         const isRaw =
           literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -211,10 +215,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
               continue;
             }
 
-            if (
-              expression[Symbol.iterator] ||
-              expression[Symbol.asyncIterator]
-            ) {
+            if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
               for await (expression of expression) {
                 if (typeof expression === "string") {
                   string = expression;
