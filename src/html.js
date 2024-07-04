@@ -1,4 +1,3 @@
-const arrayIsArray = Array.isArray;
 const symbolIterator = Symbol.iterator;
 const symbolAsyncIterator = Symbol.asyncIterator;
 
@@ -61,7 +60,7 @@ const html = ({ raw: literals }, ...expressions) => {
         ? expression
         : expression == null
           ? ""
-          : arrayIsArray(expression)
+          : Array.isArray(expression)
             ? expression.join("")
             : `${expression}`;
 
