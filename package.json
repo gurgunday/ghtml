@@ -5,6 +5,7 @@
   "license": "MIT",
   "version": "2.0.4",
   "type": "module",
+  "bin": "./bin/src/index.js",
   "main": "./src/index.js",
   "exports": {
     ".": "./src/index.js",
@@ -19,9 +20,13 @@
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint --fix . && prettier --write ."
   },
+  "dependencies": {
+    "fastq": "^1.17.1",
+    "glob": "^10.4.2"
+  },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
-    "c8": "^10.0.0",
+    "c8": "^10.1.2",
     "grules": "^0.17.2",
     "tinybench": "^2.8.0"
   },

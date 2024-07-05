@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "main": "./server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node ../src/index.js --roots=assets/ --refs=routes/"
+  },
+  "dependencies": {
+    "@fastify/static": "^7.0.1",
+    "fastify": "^4.26.1",
+    "fastify-html": "^0.3.3"
+  }
+}
