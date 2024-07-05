@@ -46,7 +46,7 @@ COPY . .
 
 RUN npm run build
 
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 CMD ["npm", "start"]
 ```
