@@ -1,4 +1,5 @@
 const escapeRegExp = /["&'<>`]/;
+
 const escapeFunction = (string) => {
   const stringLength = string.length;
   let start = 0;
