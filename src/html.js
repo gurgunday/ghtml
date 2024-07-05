@@ -1,6 +1,3 @@
-const symbolIterator = Symbol.iterator;
-const symbolAsyncIterator = Symbol.asyncIterator;
-
 const escapeRegExp = /["&'<>`]/;
 const escapeFunction = (string) => {
   const stringLength = string.length;
@@ -8,34 +5,34 @@ const escapeFunction = (string) => {
   let end = 0;
   let escaped = "";
 
-  do {
-    switch (string.charCodeAt(end++)) {
+  for (; end !== stringLength; ++end) {
+    switch (string.charCodeAt(end)) {
       case 34: // "
-        escaped += string.slice(start, end - 1) + "&#34;";
-        start = end;
+        escaped += string.slice(start, end) + "&#34;";
+        start = end + 1;
         continue;
       case 38: // &
-        escaped += string.slice(start, end - 1) + "&#38;";
-        start = end;
+        escaped += string.slice(start, end) + "&#38;";
+        start = end + 1;
         continue;
       case 39: // '
-        escaped += string.slice(start, end - 1) + "&#39;";
-        start = end;
+        escaped += string.slice(start, end) + "&#39;";
+        start = end + 1;
         continue;
       case 60: // <
-        escaped += string.slice(start, end - 1) + "&#60;";
-        start = end;
+        escaped += string.slice(start, end) + "&#60;";
+        start = end + 1;
         continue;
       case 62: // >
-        escaped += string.slice(start, end - 1) + "&#62;";
-        start = end;
+        escaped += string.slice(start, end) + "&#62;";
+        start = end + 1;
         continue;
       case 96: // `
-        escaped += string.slice(start, end - 1) + "&#96;";
-        start = end;
+        escaped += string.slice(start, end) + "&#96;";
+        start = end + 1;
         continue;
     }
-  } while (end !== stringLength);
+  }
 
   escaped += string.slice(start, end);
 
@@ -97,7 +94,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     } else if (expression == null) {
       string = "";
     } else {
-      if (expression[symbolIterator]) {
+      if (expression[Symbol.iterator]) {
         const isRaw =
           literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -117,7 +114,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
               continue;
             }
 
-            if (expression[symbolIterator]) {
+            if (expression[Symbol.iterator]) {
               for (expression of expression) {
                 if (typeof expression === "string") {
                   string = expression;
@@ -194,7 +191,7 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     } else if (expression == null) {
       string = "";
     } else {
-      if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
+      if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
         const isRaw =
           literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -214,7 +211,10 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
               continue;
             }
 
-            if (expression[symbolIterator] || expression[symbolAsyncIterator]) {
+            if (
+              expression[Symbol.iterator] ||
+              expression[Symbol.asyncIterator]
+            ) {
               for await (expression of expression) {
                 if (typeof expression === "string") {
                   string = expression;
