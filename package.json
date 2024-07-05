@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
-    "c8": "^10.0.0",
+    "c8": "^10.1.2",
     "fastq": "^1.17.1",
     "glob": "^10.4.2",
     "grules": "^0.17.2",
