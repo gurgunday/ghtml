@@ -1,10 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { win32, posix } from "node:path";
-import { cpus } from "node:os";
 import { Glob } from "glob";
-import { promise as fastq } from "fastq";
-const fastqConcurrency = Math.max(1, cpus().length - 1);
 
 const generateFileHash = async (filePath) => {
   try {
@@ -91,10 +88,8 @@ const generateHashesAndReplace = async ({
       rootPath += "/";
     }
 
-    const queue = fastq(generateFileHash, fastqConcurrency);
-    const queuePromises = [];
+    const queue = [];
     const files = [];
-
     const filesIterable = new Glob("**/**", {
       nodir: true,
       follow: true,
@@ -104,13 +99,13 @@ const generateHashesAndReplace = async ({
       ignore: skipPatterns,
     });
 
-    for await (let file of filesIterable) {
-      file = file.split(win32.sep).join(posix.sep);
-      files.push(file);
-      queuePromises.push(queue.push(file));
+    for await (let filePath of filesIterable) {
+      filePath = filePath.split(win32.sep).join(posix.sep);
+      queue.push(generateFileHash(filePath));
+      files.push(filePath);
     }
 
-    const hashes = await Promise.all(queuePromises);
+    const hashes = await Promise.all(queue);
 
     for (let i = 0; i < files.length; i++) {
       const fileRelativePath = posix.relative(rootPath, files[i]);
