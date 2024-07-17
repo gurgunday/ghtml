@@ -1,11 +1,11 @@
 const escapeRegExp = /["&'<>`]/;
 
 const escapeFunction = (string) => {
-  const stringLength = string.length;
-  let start = 0;
   let escaped = "";
+  let start = 0;
+  let end = 0;
 
-  for (let end = 0; end !== stringLength; ++end) {
+  for (; end !== string.length; ++end) {
     switch (string.charCodeAt(end)) {
       case 34: // "
         escaped += string.slice(start, end) + "&#34;";
@@ -34,7 +34,7 @@ const escapeFunction = (string) => {
     }
   }
 
-  escaped += string.slice(start, stringLength);
+  escaped += string.slice(start, end);
 
   return escaped;
 };
@@ -45,10 +45,10 @@ const escapeFunction = (string) => {
  * @returns {string} The HTML string.
  */
 const html = ({ raw: literals }, ...expressions) => {
-  const expressionsLength = expressions.length;
   let accumulator = "";
+  let index = 0;
 
-  for (let index = 0; index !== expressionsLength; ++index) {
+  for (; index !== expressions.length; ++index) {
     const expression = expressions[index];
     let literal = literals[index];
     let string =
@@ -69,7 +69,7 @@ const html = ({ raw: literals }, ...expressions) => {
     accumulator += literal + string;
   }
 
-  accumulator += literals[expressionsLength];
+  accumulator += literals[index];
 
   return accumulator;
 };
@@ -80,9 +80,9 @@ const html = ({ raw: literals }, ...expressions) => {
  * @yields {string} The HTML strings.
  */
 const htmlGenerator = function* ({ raw: literals }, ...expressions) {
-  const expressionsLength = expressions.length;
+  let index = 0;
 
-  for (let index = 0; index !== expressionsLength; ++index) {
+  for (; index !== expressions.length; ++index) {
     let expression = expressions[index];
     let literal = literals[index];
     let string;
@@ -165,8 +165,8 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     }
   }
 
-  if (literals[expressionsLength]) {
-    yield literals[expressionsLength];
+  if (literals[index]) {
+    yield literals[index];
   }
 };
 
@@ -176,9 +176,9 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
  * @yields {string} The HTML strings.
  */
 const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
-  const expressionsLength = expressions.length;
+  let index = 0;
 
-  for (let index = 0; index !== expressionsLength; ++index) {
+  for (; index !== expressions.length; ++index) {
     let expression = await expressions[index];
     let literal = literals[index];
     let string;
@@ -264,8 +264,8 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     }
   }
 
-  if (literals[expressionsLength]) {
-    yield literals[expressionsLength];
+  if (literals[index]) {
+    yield literals[index];
   }
 };
 
