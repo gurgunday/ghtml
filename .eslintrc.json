@@ -1,7 +1,4 @@
 {
   "root": true,
-  "extends": ["plugin:grules/all"],
-  "rules": {
-    "prefer-template": "off"
-  }
+  "extends": ["plugin:grules/all"]
 }
