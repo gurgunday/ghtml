@@ -21,12 +21,12 @@
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
-    "glob": "^10.4.2"
+    "glob": "^10.4.5"
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
     "c8": "^10.1.2",
-    "grules": "^0.17.2",
+    "grules": "^0.17.3",
     "tinybench": "^2.8.0"
   },
   "repository": {
