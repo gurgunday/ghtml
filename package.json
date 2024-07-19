@@ -21,7 +21,7 @@
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
-    "glob": "^10.4.5"
+    "glob": "^11.0.0"
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
