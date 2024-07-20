@@ -22,7 +22,7 @@ export default async (fastify) => {
   fastify.get("/", async (request, reply) => {
     return reply.html`
       <h1 class="caption">Hello, world!</h1>
-      <img width="500" src="/p/assets/sun.webp" alt="Picture of a cat" />
+      <script src="/p/assets/script.js"></script>
     `;
   });
 };
