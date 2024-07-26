@@ -1,3 +1,5 @@
+/* eslint-disable n/no-missing-import */
+
 import { html } from "ghtml";
 
 export default async (fastify) => {
