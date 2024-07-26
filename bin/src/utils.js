@@ -38,42 +38,34 @@ const updateFilePathsWithHashes = async (
 
     for await (const filePath of filesIterable) {
       let content = await readFile(filePath, "utf8");
-      let hasChanges = false;
+      let found = false;
 
       for (const [originalPath, hash] of fileHashes) {
-        const pathIndex = content.indexOf(originalPath);
-        if (pathIndex !== -1) {
-          hasChanges = true;
-          const beforePath = content.slice(0, pathIndex);
-          const afterPath = content.slice(pathIndex + originalPath.length);
+        const escapedPath = originalPath.replace(
+          /[$()*+.?[\\\]^{|}]/gu,
+          "\\$&",
+        );
+        const regex = new RegExp(
+          `(?<path>${escapedPath})(\\?(?<queryString>[^#"'\`]*))?`,
+          "gu",
+        );
 
-          const queryStart = afterPath.indexOf("?");
-          if (queryStart === -1) {
-            content = `${beforePath}${originalPath}?hash=${hash}${afterPath}`;
-            continue;
-          }
+        content = content.replace(
+          regex,
+          (match, p1, p2, p3, offset, string, groups) => {
+            found = true;
+            const { path, queryString } = groups;
 
-          const queryEnd = afterPath.slice(queryStart).search(/[#"'`]/u);
-          const queryString =
-            queryEnd !== -1
-              ? afterPath.slice(queryStart + 1, queryEnd)
-              : afterPath.slice(queryStart + 1);
-
-          const hashRegex = /(?<=(?:^|&))hash=[^&]*/u;
-          if (hashRegex.test(queryString)) {
-            const newQueryString = queryString.replace(
-              hashRegex,
-              `hash=${hash}`,
-            );
-            content = `${beforePath}${originalPath}?${newQueryString}${afterPath.slice(queryStart + queryString.length + 1)}`;
-            continue;
-          }
-
-          content = `${beforePath}${originalPath}?hash=${hash}&${afterPath.slice(queryStart + 1)}`;
-        }
+            return !queryString
+              ? `${path}?hash=${hash}`
+              : queryString.includes("hash=")
+                ? `${path}?${queryString.replace(/(?<hash>hash=)[\dA-Fa-f]*/u, `$1${hash}`)}`
+                : `${path}?hash=${hash}&${queryString}`;
+          },
+        );
       }
 
-      if (hasChanges) {
+      if (found) {
         await writeFile(filePath, content);
       }
     }
