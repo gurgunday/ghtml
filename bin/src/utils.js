@@ -129,4 +129,4 @@ const generateHashesAndReplace = async ({
   );
 };
 
-export { generateFileHash, generateHashesAndReplace };
+export { generateHashesAndReplace };
