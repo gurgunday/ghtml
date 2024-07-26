@@ -11,6 +11,7 @@ const generateFileHash = async (filePath) => {
     if (err.code !== "ENOENT") {
       throw err;
     }
+
     return "";
   }
 };
@@ -22,7 +23,7 @@ const updateFilePathsWithHashes = async (
   skipPatterns,
 ) => {
   for (let ref of refs) {
-    ref = ref.split(win32.sep).join(posix.sep);
+    ref = ref.replaceAll(win32.sep, posix.sep);
     if (!ref.endsWith("/")) {
       ref += "/";
     }
@@ -38,34 +39,42 @@ const updateFilePathsWithHashes = async (
 
     for await (const file of filesIterable) {
       let content = await readFile(file, "utf8");
-      let found = false;
+      let hasChanges = false;
 
       for (const [originalPath, hash] of fileHashes) {
-        const escapedPath = originalPath.replace(
-          /[$()*+.?[\\\]^{|}]/gu,
-          "\\$&",
-        );
-        const regex = new RegExp(
-          `(?<path>${escapedPath})(\\?(?<queryString>[^#"'\`]*))?`,
-          "gu",
-        );
+        const pathIndex = content.indexOf(originalPath);
+        if (pathIndex !== -1) {
+          hasChanges = true;
+          const beforePath = content.slice(0, pathIndex);
+          const afterPath = content.slice(pathIndex + originalPath.length);
 
-        content = content.replace(
-          regex,
-          (match, p1, p2, p3, offset, string, groups) => {
-            found = true;
-            const { path, queryString } = groups;
+          const queryStart = afterPath.indexOf("?");
+          if (queryStart === -1) {
+            content = `${beforePath}${originalPath}?hash=${hash}${afterPath}`;
+            continue;
+          }
 
-            return !queryString
-              ? `${path}?hash=${hash}`
-              : queryString.includes("hash=")
-                ? `${path}?${queryString.replace(/(?<hash>hash=)[\dA-Fa-f]*/u, `$1${hash}`)}`
-                : `${path}?hash=${hash}&${queryString}`;
-          },
-        );
+          const queryEnd = afterPath.slice(queryStart).search(/[#"'`]/u);
+          const queryString =
+            queryEnd !== -1
+              ? afterPath.slice(queryStart + 1, queryEnd)
+              : afterPath.slice(queryStart + 1);
+
+          const hashRegex = /(?<=(?:^|&))hash=[^&]*/u;
+          if (hashRegex.test(queryString)) {
+            const newQueryString = queryString.replace(
+              hashRegex,
+              `hash=${hash}`,
+            );
+            content = `${beforePath}${originalPath}?${newQueryString}${afterPath.slice(queryStart + queryString.length + 1)}`;
+            continue;
+          }
+
+          content = `${beforePath}${originalPath}?hash=${hash}&${afterPath.slice(queryStart + 1)}`;
+        }
       }
 
-      if (found) {
+      if (hasChanges) {
         await writeFile(file, content);
       }
     }
@@ -82,10 +91,10 @@ const generateHashesAndReplace = async ({
   roots = Array.isArray(roots) ? roots : [roots];
   refs = Array.isArray(refs) ? refs : [refs];
 
-  for (let rootPath of roots) {
-    rootPath = rootPath.split(win32.sep).join(posix.sep);
-    if (!rootPath.endsWith("/")) {
-      rootPath += "/";
+  for (let root of roots) {
+    root = root.replaceAll(win32.sep, posix.sep);
+    if (!root.endsWith("/")) {
+      root += "/";
     }
 
     const queue = [];
@@ -94,21 +103,21 @@ const generateHashesAndReplace = async ({
       nodir: true,
       follow: true,
       absolute: true,
-      cwd: rootPath,
+      cwd: root,
       dot: includeDotFiles,
       ignore: skipPatterns,
     });
 
     for await (let filePath of filesIterable) {
-      filePath = filePath.split(win32.sep).join(posix.sep);
+      filePath = filePath.replaceAll(win32.sep, posix.sep);
       queue.push(generateFileHash(filePath));
       files.push(filePath);
     }
 
     const hashes = await Promise.all(queue);
 
-    for (let i = 0; i < files.length; i++) {
-      const fileRelativePath = posix.relative(rootPath, files[i]);
+    for (let i = 0; i < files.length; ++i) {
+      const fileRelativePath = posix.relative(root, files[i]);
       fileHashes.set(fileRelativePath, hashes[i]);
     }
   }
