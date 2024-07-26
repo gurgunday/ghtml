@@ -5,7 +5,7 @@ Append unique hashes to assets referenced in your views to aggressively cache th
 Running the following command will scan asset files found in the `roots` path(s) and replace their references with hashed versions in the `refs` path(s):
 
 ```sh
-npx ghtml --roots="path/to/scan/assets/1/,path/to/scan/assets/2/" --refs="views/path/to/append/hashes/1/,views/path/to/append/hashes/2/"
+npx ghtml --roots="base/path/to/scan/assets/1/,base/path/to/scan/assets/2/" --refs="views/path/to/append/hashes/1/,views/path/to/append/hashes/2/"
 ```
 
 ## Example (Fastify)
