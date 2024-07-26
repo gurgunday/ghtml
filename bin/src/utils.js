@@ -36,8 +36,8 @@ const updateFilePathsWithHashes = async (
       ignore: skipPatterns,
     });
 
-    for await (const file of filesIterable) {
-      let content = await readFile(file, "utf8");
+    for await (const filePath of filesIterable) {
+      let content = await readFile(filePath, "utf8");
       let hasChanges = false;
 
       for (const [originalPath, hash] of fileHashes) {
@@ -74,7 +74,7 @@ const updateFilePathsWithHashes = async (
       }
 
       if (hasChanges) {
-        await writeFile(file, content);
+        await writeFile(filePath, content);
       }
     }
   }
