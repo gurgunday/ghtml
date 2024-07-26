@@ -1,4 +1,4 @@
-This executable lets you append unique hashes to assets referenced in your views to aggressively cache them while guaranteeing that clients receive the most recent versions.
+Lets you append unique hashes to assets referenced in your views to aggressively cache them while guaranteeing that clients receive the most recent versions.
 
 ## Usage
 
