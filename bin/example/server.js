@@ -15,10 +15,10 @@ await fastify.register(import("@fastify/static"), {
 // Routes
 fastify.register(import("./routes/index.js"));
 
-fastify.listen({ port: 5050 }, (err) => {
+fastify.listen({ port: 5050 }, (err, address) => {
   if (err) {
     throw err;
   }
 
-  console.warn("Server listening at http://localhost:5050");
+  console.warn(`Server listening at ${address}`);
 });
