@@ -11,7 +11,6 @@ const generateFileHash = async (filePath) => {
     if (err.code !== "ENOENT") {
       throw err;
     }
-
     return "";
   }
 };
