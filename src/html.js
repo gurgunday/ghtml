@@ -33,7 +33,7 @@ const escapeFunction = (string) => {
     }
   }
 
-  escaped += string.slice(start, string.length);
+  escaped += string.slice(start);
 
   return escaped;
 };
