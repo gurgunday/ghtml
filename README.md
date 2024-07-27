@@ -171,4 +171,4 @@ console.log(logo);
 
 ## Security
 
-Like [similar](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities) [tools](https://handlebarsjs.com/guide/#html-escaping), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and relying on unsanitized user-provided URLs.
+Like [similar](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities) [tools](https://handlebarsjs.com/guide/#html-escaping), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and relying on unsanitized user-provided URIs.
