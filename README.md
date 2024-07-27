@@ -2,6 +2,8 @@ ta**ghtml** lets you replace your template engine with fast JavaScript by levera
 
 Inspired by [html-template-tag](https://github.com/AntonioVdlC/html-template-tag).
 
+![ghtml.gif](./ghtml.gif)
+
 ## Installation
 
 ```sh
