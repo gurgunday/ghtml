@@ -18,6 +18,7 @@ const generateFileHash = async (filePath) => {
 const updateFilePathsWithHashes = async (
   fileHashes,
   refs,
+  prefix,
   includeDotFiles,
   skipPatterns,
 ) => {
@@ -40,14 +41,15 @@ const updateFilePathsWithHashes = async (
       let content = await readFile(filePath, "utf8");
       let found = false;
 
-      for (const [originalPath, hash] of fileHashes) {
-        const escapedPath = originalPath.replace(
-          /[$()*+.?[\\\]^{|}]/gu,
-          "\\$&",
+      for (const [path, hash] of fileHashes) {
+        const fullPath = prefix + path;
+        const escapedPath = fullPath.replace(
+          /[$()*+.?[\\\]^{|}]/g,
+          String.raw`\$&`,
         );
         const regex = new RegExp(
           `(?<path>${escapedPath})(\\?(?<queryString>[^#"'\`]*))?`,
-          "gu",
+          "g",
         );
 
         content = content.replace(
@@ -75,6 +77,7 @@ const updateFilePathsWithHashes = async (
 const generateHashesAndReplace = async ({
   roots,
   refs,
+  prefix,
   includeDotFiles = false,
   skipPatterns = ["**/node_modules/**"],
 }) => {
@@ -116,6 +119,7 @@ const generateHashesAndReplace = async ({
   await updateFilePathsWithHashes(
     fileHashes,
     refs,
+    prefix,
     includeDotFiles,
     skipPatterns,
   );

@@ -1,4 +1,4 @@
-Lets you append unique hashes to assets referenced in your views to aggressively cache them while guaranteeing that clients receive the most recent versions.
+Append unique hashes to assets referenced in your views to aggressively cache them while guaranteeing that clients receive the most recent versions.
 
 ## Usage
 
@@ -27,7 +27,7 @@ Add the `ghtml` command to the build script:
 
 ```json
 "scripts": {
-  "build": "npx ghtml --roots=assets/ --refs=views/,routes/",
+  "build": "npx ghtml --roots=assets/ --refs=views/,routes/ --prefix=/p/assets/",
 },
 ```
 

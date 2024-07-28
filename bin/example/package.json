@@ -3,7 +3,7 @@
   "main": "./server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "ghtml --roots=assets/ --refs=routes/"
+    "build": "ghtml --roots=assets/ --refs=routes/ --prefix=/p/assets/"
   },
   "dependencies": {
     "@fastify/static": "^7.0.1",

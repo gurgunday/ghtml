@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "require-await": "off",
+    "n/no-missing-import": "off"
+  }
+}
