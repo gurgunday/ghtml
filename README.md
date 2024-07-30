@@ -1,6 +1,8 @@
-ta**ghtml** lets you replace your template engine with fast JavaScript by leveraging the power of [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
+# ghtml ![img.shields.io/bundlephobia/minzip/ghtml](https://img.shields.io/bundlephobia/minzip/ghtml)
 
-Inspired by [html-template-tag](https://github.com/AntonioVdlC/html-template-tag).
+ta**ghtml** lets you replace your template engine with fast JavaScript by leveraging the power of tagged templates.
+
+Works in the browser. No runtime dependencies. [~30x faster than React. ~10x faster than common-tags.](#benchmarks)
 
 ![ghtml.gif](./ghtml.gif)
 
@@ -8,6 +10,12 @@ Inspired by [html-template-tag](https://github.com/AntonioVdlC/html-template-tag
 
 ```sh
 npm i ghtml
+```
+
+Or import directly from a CDN:
+
+```js
+import { html } from "https://cdn.jsdelivr.net/npm/ghtml/+esm";
 ```
 
 ## API
@@ -34,7 +42,7 @@ Because they return generators instead of strings, a key difference of `htmlGene
 
 ### `includeFile`
 
-Available in Node.js, the `includeFile` function is a wrapper around `readFileSync`. It reads and returns the content of a file while also caching it in memory for faster future reuse.
+Available in Node.js, the `includeFile` function is a wrapper around `readFileSync`. It reads and returns the content of a file while caching it in memory for faster future reuse.
 
 ## Usage
 
@@ -171,6 +179,38 @@ console.log(logo);
 // Output: content of "static/logo.svg"
 ```
 
+## Benchmarks
+
+Latest results [from Kita](https://github.com/kitajs/html/tree/1464b632c7ae59086acdfe4debbc0f055ea41e62/benchmarks):
+
+```sh
+benchmark        time (avg)             (min … max)       p75       p99      p999
+--------------------------------------------------- -----------------------------
+• Real World Scenario
+--------------------------------------------------- -----------------------------
+KitaJS/Html     505 µs/iter     (387 µs … 2'007 µs)    417 µs  1'209 µs  1'857 µs
+Typed Html    1'844 µs/iter   (1'604 µs … 2'415 µs)  2'088 µs  2'211 µs  2'415 µs
+VHtml         2'424 µs/iter   (2'250 µs … 2'864 µs)  2'462 µs  2'829 µs  2'864 µs
+React JSX     6'416 µs/iter   (5'893 µs … 9'399 µs)  6'840 µs  9'399 µs  9'399 µs
+Preact          970 µs/iter     (673 µs … 5'038 µs)    766 µs  2'224 µs  5'038 µs
+React         6'319 µs/iter   (5'885 µs … 7'306 µs)  6'678 µs  7'306 µs  7'306 µs
+Common Tags   2'967 µs/iter   (2'774 µs … 3'801 µs)  2'916 µs  3'794 µs  3'801 µs
+Ghtml           225 µs/iter     (184 µs … 1'567 µs)    206 µs  1'066 µs  1'450 µs
+JSXTE         4'489 µs/iter   (3'605 µs … 6'215 µs)  4'517 µs  6'062 µs  6'215 µs
+
+
+summary for Real World Scenario
+  Ghtml
+   2.25x faster than KitaJS/Html
+   4.32x faster than Preact
+   8.21x faster than Typed Html
+   10.8x faster than VHtml
+   13.22x faster than Common Tags
+   20x faster than JSXTE
+   28.15x faster than React
+   28.58x faster than React JSX
+```
+
 ## Security
 
-Like [similar](https://github.com/mde/ejs/blob/main/SECURITY.md#out-of-scope-vulnerabilities) [tools](https://handlebarsjs.com/guide/#html-escaping), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and relying on unsanitized user-provided URIs.
+Like [similar tools](https://handlebarsjs.com/guide/#html-escaping), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and relying on unsanitized user-provided URIs.
