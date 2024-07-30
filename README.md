@@ -55,7 +55,7 @@ const username = '<img src="https://example.com/pwned.png">';
 const greeting = html`<h1>Hello, ${username}</h1>`;
 
 console.log(greeting);
-// Output: <h1>Hello, &#60;img src=&#34;https://example.com/pwned.png&#34;&#62;</h1>
+// Output: <h1>Hello, &#60;img src&#61;&#34;https://example.com/pwned.png&#34;&#62;</h1>
 ```
 
 To bypass escaping:
