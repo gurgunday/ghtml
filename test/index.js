@@ -70,6 +70,14 @@ test("renders unsafe content /2", () => {
   );
 });
 
+test("renders unsafe content /3", () => {
+  // prettier-ignore
+  assert.strictEqual(
+    html`<img src="https://picsum.photos/200/300" alt=${"altText onload=alert(String.fromCharCode(112,119,110,101,100))"} />`,
+    `<img src="https://picsum.photos/200/300" alt=altText onload&#61;alert(String.fromCharCode(112,119,110,101,100)) />`,
+  );
+});
+
 test("renders arrays", () => {
   assert.strictEqual(
     html`<p>${[descriptionSafe, descriptionUnsafe]}</p>`,
