@@ -1,4 +1,4 @@
-const escapeRegExp = /["&'<=>`]/;
+const escapeRegExp = /["&'<=>]/;
 
 const escapeFunction = (string) => {
   let escaped = "";
@@ -28,10 +28,6 @@ const escapeFunction = (string) => {
         continue;
       case 62: // >
         escaped += string.slice(start, end) + "&#62;";
-        start = end + 1;
-        continue;
-      case 96: // `
-        escaped += string.slice(start, end) + "&#96;";
         start = end + 1;
         continue;
     }

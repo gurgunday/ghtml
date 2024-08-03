@@ -66,7 +66,7 @@ test("renders unsafe content", () => {
 test("renders unsafe content /2", () => {
   assert.strictEqual(
     html`<p>${`${descriptionUnsafe}"&\``}</p>`,
-    `<p>&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;&#34;&#38;&#96;</p>`,
+    `<p>&#60;script&#62;alert(&#39;This is an unsafe description.&#39;)&#60;/script&#62;&#34;&#38;\`</p>`,
   );
 });
 
