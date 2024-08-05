@@ -1,7 +1,7 @@
+import { Glob } from "glob";
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { win32, posix } from "node:path";
-import { Glob } from "glob";
 
 const generateFileHash = async (filePath) => {
   try {
