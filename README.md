@@ -181,7 +181,7 @@ console.log(logo);
 
 ## Benchmarks
 
-Latest results [from Kita](https://github.com/kitajs/html/tree/1464b632c7ae59086acdfe4debbc0f055ea41e62/benchmarks):
+Latest results [from Kita](https://github.com/kitajs/html/tree/cb7950c68489ff70dd0b0c130c9b70046c1543ea/benchmarks):
 
 ```sh
 benchmark        time (avg)             (min … max)       p75       p99      p999
@@ -213,4 +213,4 @@ summary for Real World Scenario
 
 ## Security
 
-Like [similar tools](https://handlebarsjs.com/guide/#html-escaping), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values (especially when they contain expressions), and relying on unsanitized user-provided URIs.
+Like [similar tools](https://github.com/mde/ejs/blob/a4770b8ff49b93387c7f2760d957446cd332531a/SECURITY.md#out-of-scope-vulnerabilities), ghtml does not prevent all kinds of XSS attacks. It is the responsibility of developers to sanitize user inputs. Some inherently insecure uses include dynamically generating JavaScript, failing to quote HTML attribute values, and relying on unsanitized user-provided URIs.
