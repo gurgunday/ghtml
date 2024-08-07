@@ -47,16 +47,15 @@ const html = ({ raw: literals }, ...expressions) => {
   let accumulator = "";
 
   for (let i = 0; i !== expressions.length; ++i) {
-    const expression = expressions[i];
     let literal = literals[i];
     let string =
-      typeof expression === "string"
-        ? expression
-        : expression == null
+      typeof expressions[i] === "string"
+        ? expressions[i]
+        : expressions[i] == null
           ? ""
-          : Array.isArray(expression)
-            ? expression.join("")
-            : `${expression}`;
+          : Array.isArray(expressions[i])
+            ? expressions[i].join("")
+            : `${expressions[i]}`;
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
