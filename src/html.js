@@ -39,7 +39,7 @@ const escapeFunction = (string) => {
 };
 
 /**
- * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {{ raw: Readonly<string[]> }} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
  * @returns {string} The HTML string.
  */
@@ -72,7 +72,7 @@ const html = ({ raw: literals }, ...expressions) => {
 };
 
 /**
- * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {{ raw: Readonly<string[]> }} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
  * @yields {string} The HTML strings.
  */
@@ -166,7 +166,7 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 };
 
 /**
- * @param {{ raw: string[] }} literals Tagged template literals.
+ * @param {{ raw: Readonly<string[]> }} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
  * @yields {string} The HTML strings.
  */
