@@ -25,7 +25,7 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: npm install --ignore-scripts
+        run: npm install
 
       # Run benchmark on PR code
       - name: Run benchmark on PR code
