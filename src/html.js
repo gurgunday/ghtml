@@ -39,11 +39,11 @@ const escapeFunction = (string) => {
 };
 
 /**
- * @param {{ raw: Readonly<string[]> }} literals Tagged template literals.
+ * @param {TemplateStringsArray} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
- * @returns {string} The HTML string.
+ * @returns {string} The processed HTML string.
  */
-const html = ({ raw: literals }, ...expressions) => {
+export const html = ({ raw: literals }, ...expressions) => {
   let accumulator = "";
 
   for (let i = 0; i !== expressions.length; ++i) {
@@ -72,11 +72,12 @@ const html = ({ raw: literals }, ...expressions) => {
 };
 
 /**
- * @param {{ raw: Readonly<string[]> }} literals Tagged template literals.
+ * @param {TemplateStringsArray} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
- * @yields {string} The HTML strings.
+ * @yields Processed HTML strings.
+ * @returns {Generator<string, void, void>} The HTML generator.
  */
-const htmlGenerator = function* ({ raw: literals }, ...expressions) {
+export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
     let expression = expressions[i];
     let literal = literals[i];
@@ -166,11 +167,15 @@ const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 };
 
 /**
- * @param {{ raw: Readonly<string[]> }} literals Tagged template literals.
+ * @param {TemplateStringsArray} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
- * @yields {string} The HTML strings.
+ * @yields Processed HTML strings.
+ * @returns {AsyncGenerator<string, void, void>} The HTML generator.
  */
-const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
+export const htmlAsyncGenerator = async function* (
+  { raw: literals },
+  ...expressions
+) {
   for (let i = 0; i !== expressions.length; ++i) {
     let expression = await expressions[i];
     let literal = literals[i];
@@ -261,5 +266,3 @@ const htmlAsyncGenerator = async function* ({ raw: literals }, ...expressions) {
     yield literals[expressions.length];
   }
 };
-
-export { html, htmlGenerator, htmlAsyncGenerator };

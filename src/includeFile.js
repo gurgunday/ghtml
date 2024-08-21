@@ -4,9 +4,9 @@ const cache = new Map();
 
 /**
  * @param {string} path The path to the file to render.
- * @returns {string} The cached content of the file.
+ * @returns {string} The content of the file.
  */
-const includeFile = (path) => {
+export const includeFile = (path) => {
   let file = cache.get(path);
 
   if (file === undefined) {
@@ -16,5 +16,3 @@ const includeFile = (path) => {
 
   return file;
 };
-
-export { includeFile };
