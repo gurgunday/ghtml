@@ -1,39 +1,37 @@
-const escapeRegExp = /["&'<=>]/;
+const escapeRegExp = /["&'<=>]/g;
 
 const escapeFunction = (string) => {
   let escaped = "";
-  let start = 0;
+  let end = 0;
 
-  for (let end = 0; end !== string.length; ++end) {
-    switch (string.charCodeAt(end)) {
+  while (escapeRegExp.test(string)) {
+    const i = escapeRegExp.lastIndex - 1;
+
+    switch (string.charCodeAt(i)) {
       case 34: // "
-        escaped += string.slice(start, end) + "&#34;";
-        start = end + 1;
-        continue;
+        escaped += string.slice(end, i) + "&#34;";
+        break;
       case 38: // &
-        escaped += string.slice(start, end) + "&#38;";
-        start = end + 1;
-        continue;
+        escaped += string.slice(end, i) + "&#38;";
+        break;
       case 39: // '
-        escaped += string.slice(start, end) + "&#39;";
-        start = end + 1;
-        continue;
+        escaped += string.slice(end, i) + "&#39;";
+        break;
       case 60: // <
-        escaped += string.slice(start, end) + "&#60;";
-        start = end + 1;
-        continue;
+        escaped += string.slice(end, i) + "&#60;";
+        break;
       case 61: // =
-        escaped += string.slice(start, end) + "&#61;";
-        start = end + 1;
-        continue;
+        escaped += string.slice(end, i) + "&#61;";
+        break;
       case 62: // >
-        escaped += string.slice(start, end) + "&#62;";
-        start = end + 1;
-        continue;
+        escaped += string.slice(end, i) + "&#62;";
+        break;
     }
+
+    end = i + 1;
   }
 
-  escaped += string.slice(start);
+  escaped += string.slice(end);
 
   return escaped;
 };
@@ -59,8 +57,8 @@ export const html = ({ raw: literals }, ...expressions) => {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
-      string = escapeFunction(string);
+    } else {
+      string &&= escapeFunction(string);
     }
 
     accumulator += literal + string;
@@ -121,7 +119,7 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                 }
 
                 if (string) {
-                  if (!isRaw && escapeRegExp.test(string)) {
+                  if (!isRaw) {
                     string = escapeFunction(string);
                   }
 
@@ -136,7 +134,7 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
           }
 
           if (string) {
-            if (!isRaw && escapeRegExp.test(string)) {
+            if (!isRaw) {
               string = escapeFunction(string);
             }
 
@@ -152,8 +150,8 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
-      string = escapeFunction(string);
+    } else {
+      string &&= escapeFunction(string);
     }
 
     if (literal || string) {
@@ -222,7 +220,7 @@ export const htmlAsyncGenerator = async function* (
                 }
 
                 if (string) {
-                  if (!isRaw && escapeRegExp.test(string)) {
+                  if (!isRaw) {
                     string = escapeFunction(string);
                   }
 
@@ -237,7 +235,7 @@ export const htmlAsyncGenerator = async function* (
           }
 
           if (string) {
-            if (!isRaw && escapeRegExp.test(string)) {
+            if (!isRaw) {
               string = escapeFunction(string);
             }
 
@@ -253,8 +251,8 @@ export const htmlAsyncGenerator = async function* (
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string && escapeRegExp.test(string)) {
-      string = escapeFunction(string);
+    } else {
+      string &&= escapeFunction(string);
     }
 
     if (literal || string) {
