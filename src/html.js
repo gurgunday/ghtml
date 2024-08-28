@@ -1,11 +1,10 @@
 const escapeRegExp = /["&'<=>]/g;
 
 const escapeFunction = (string) => {
-  let escaped = "";
-  let end = 0;
-
-  while (escapeRegExp.test(string)) {
-    const i = escapeRegExp.lastIndex - 1;
+  if (escapeRegExp.test(string)) {
+    let escaped = "";
+    let end = 0;
+    let i = escapeRegExp.lastIndex - 1;
 
     switch (string.charCodeAt(i)) {
       case 34: // "
@@ -29,11 +28,40 @@ const escapeFunction = (string) => {
     }
 
     end = i + 1;
+
+    while (escapeRegExp.test(string)) {
+      i = escapeRegExp.lastIndex - 1;
+
+      switch (string.charCodeAt(i)) {
+        case 34: // "
+          escaped += string.slice(end, i) + "&#34;";
+          break;
+        case 38: // &
+          escaped += string.slice(end, i) + "&#38;";
+          break;
+        case 39: // '
+          escaped += string.slice(end, i) + "&#39;";
+          break;
+        case 60: // <
+          escaped += string.slice(end, i) + "&#60;";
+          break;
+        case 61: // =
+          escaped += string.slice(end, i) + "&#61;";
+          break;
+        case 62: // >
+          escaped += string.slice(end, i) + "&#62;";
+          break;
+      }
+
+      end = i + 1;
+    }
+
+    escaped += string.slice(end);
+
+    return escaped;
   }
 
-  escaped += string.slice(end);
-
-  return escaped;
+  return string;
 };
 
 /**
