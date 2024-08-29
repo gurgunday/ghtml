@@ -122,11 +122,11 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                   string = `${expression}`;
                 }
 
-                if (string) {
-                  if (!isRaw) {
-                    string = escapeFunction(string);
-                  }
+                if (!isRaw) {
+                  string = escapeFunction(string);
+                }
 
+                if (string) {
                   yield string;
                 }
               }
@@ -137,11 +137,11 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
             string = `${expression}`;
           }
 
-          if (string) {
-            if (!isRaw) {
-              string = escapeFunction(string);
-            }
+          if (!isRaw) {
+            string = escapeFunction(string);
+          }
 
+          if (string) {
             yield string;
           }
         }
@@ -223,11 +223,11 @@ export const htmlAsyncGenerator = async function* (
                   string = `${expression}`;
                 }
 
-                if (string) {
-                  if (!isRaw) {
-                    string = escapeFunction(string);
-                  }
+                if (!isRaw) {
+                  string = escapeFunction(string);
+                }
 
+                if (string) {
                   yield string;
                 }
               }
@@ -238,11 +238,11 @@ export const htmlAsyncGenerator = async function* (
             string = `${expression}`;
           }
 
-          if (string) {
-            if (!isRaw) {
-              string = escapeFunction(string);
-            }
+          if (!isRaw) {
+            string = escapeFunction(string);
+          }
 
+          if (string) {
             yield string;
           }
         }
