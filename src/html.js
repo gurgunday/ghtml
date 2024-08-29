@@ -35,9 +35,7 @@ const escapeFunction = (string) => {
     start = i + 1;
   } while (escapeRegExp.test(string));
 
-  escaped += string.slice(start);
-
-  return escaped;
+  return escaped + string.slice(start);
 };
 
 /**
@@ -68,9 +66,7 @@ export const html = ({ raw: literals }, ...expressions) => {
     accumulator += literal + string;
   }
 
-  accumulator += literals[expressions.length];
-
-  return accumulator;
+  return accumulator + literals[expressions.length];
 };
 
 /**
