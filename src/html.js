@@ -6,36 +6,36 @@ const escapeFunction = (string) => {
   }
 
   let escaped = "";
-  let end = 0;
+  let start = 0;
 
   do {
     const i = escapeRegExp.lastIndex - 1;
 
     switch (string.charCodeAt(i)) {
       case 34: // "
-        escaped += string.slice(end, i) + "&#34;";
+        escaped += string.slice(start, i) + "&#34;";
         break;
       case 38: // &
-        escaped += string.slice(end, i) + "&#38;";
+        escaped += string.slice(start, i) + "&#38;";
         break;
       case 39: // '
-        escaped += string.slice(end, i) + "&#39;";
+        escaped += string.slice(start, i) + "&#39;";
         break;
       case 60: // <
-        escaped += string.slice(end, i) + "&#60;";
+        escaped += string.slice(start, i) + "&#60;";
         break;
       case 61: // =
-        escaped += string.slice(end, i) + "&#61;";
+        escaped += string.slice(start, i) + "&#61;";
         break;
       case 62: // >
-        escaped += string.slice(end, i) + "&#62;";
+        escaped += string.slice(start, i) + "&#62;";
         break;
     }
 
-    end = i + 1;
+    start = i + 1;
   } while (escapeRegExp.test(string));
 
-  escaped += string.slice(end);
+  escaped += string.slice(start);
 
   return escaped;
 };
