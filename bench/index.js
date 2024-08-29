@@ -104,6 +104,10 @@ bench.add("mixed escaped and unescaped expressions", () => {
   `;
 });
 
+bench.add("sparse escape", () => {
+  result = html`<p>${`${"noescape".repeat(250)}<>`.repeat(5)}</p>`;
+});
+
 await bench.warmup();
 await bench.run();
 
