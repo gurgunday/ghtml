@@ -32,7 +32,7 @@ const escapeFunction = (string) => {
         break;
     }
 
-    start = i + 1;
+    start = escapeRegExp.lastIndex;
   } while (escapeRegExp.test(string));
 
   return escaped + string.slice(start);
