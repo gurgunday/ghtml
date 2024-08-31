@@ -181,7 +181,11 @@ console.log(logo);
 
 ## Benchmarks
 
-Latest results [from Kita](https://github.com/kitajs/html/tree/cb7950c68489ff70dd0b0c130c9b70046c1543ea/benchmarks):
+Latest results from [Platformatic's SSR Showdown](https://blog.platformatic.dev/ssr-performance-showdown) (fastify-html is ghtml):
+
+![ghtml-perf.png](./ghtml-perf.png)
+
+And latest results from [KitaJS HTML](https://github.com/kitajs/html/tree/cb7950c68489ff70dd0b0c130c9b70046c1543ea/benchmarks):
 
 ```sh
 benchmark        time (avg)             (min … max)       p75       p99      p999
