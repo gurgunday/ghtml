@@ -14,29 +14,25 @@ const escapeFunction = (string) => {
     switch (string.charCodeAt(i)) {
       case 34: // "
         escaped += string.slice(start, i) + "&#34;";
-        start = escapeRegExp.lastIndex;
-        continue;
+        break;
       case 38: // &
         escaped += string.slice(start, i) + "&#38;";
-        start = escapeRegExp.lastIndex;
-        continue;
+        break;
       case 39: // '
         escaped += string.slice(start, i) + "&#39;";
-        start = escapeRegExp.lastIndex;
-        continue;
+        break;
       case 60: // <
         escaped += string.slice(start, i) + "&#60;";
-        start = escapeRegExp.lastIndex;
-        continue;
+        break;
       case 61: // =
         escaped += string.slice(start, i) + "&#61;";
-        start = escapeRegExp.lastIndex;
-        continue;
+        break;
       case 62: // >
         escaped += string.slice(start, i) + "&#62;";
-        start = escapeRegExp.lastIndex;
-        continue;
+        break;
     }
+
+    start = escapeRegExp.lastIndex;
   } while (escapeRegExp.test(string));
 
   return escaped + string.slice(start);
