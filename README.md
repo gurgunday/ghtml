@@ -2,7 +2,7 @@
 
 ta**ghtml** lets you replace your template engine with fast JavaScript by leveraging the power of tagged templates.
 
-Works in the browser. No runtime dependencies. [~30x faster than React. ~10x faster than common-tags.](#benchmarks)
+Works in the browser. No runtime dependencies. [Faster than React & Co. ~3x faster than EJS and ~13x faster than common-tags.](#benchmarks)
 
 ![ghtml.gif](./ghtml.gif)
 
@@ -185,7 +185,7 @@ Latest results from [Platformatic's SSR Showdown](https://blog.platformatic.dev/
 
 ![ghtml-perf.png](./ghtml-perf.png)
 
-And latest results from [KitaJS HTML](https://github.com/kitajs/html/tree/cb7950c68489ff70dd0b0c130c9b70046c1543ea/benchmarks):
+Latest results from [KitaJS HTML](https://github.com/kitajs/html/tree/cb7950c68489ff70dd0b0c130c9b70046c1543ea/benchmarks):
 
 ```sh
 benchmark        time (avg)             (min … max)       p75       p99      p999
