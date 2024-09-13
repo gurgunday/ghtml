@@ -1,14 +1,10 @@
 const escapeRegExp = /["&'<=>]/g;
 
 const escapeFunction = (string) => {
-  if (!string || !escapeRegExp.test(string)) {
-    return string;
-  }
-
   let escaped = "";
   let start = 0;
 
-  do {
+  while (escapeRegExp.test(string)) {
     const i = escapeRegExp.lastIndex - 1;
 
     switch (string.charCodeAt(i)) {
@@ -33,21 +29,22 @@ const escapeFunction = (string) => {
     }
 
     start = escapeRegExp.lastIndex;
-  } while (escapeRegExp.test(string));
+  }
 
   return escaped + string.slice(start);
 };
 
 /**
+ * The `html` function is designed to tag template literals and automatically escape their expressions.
  * @param {TemplateStringsArray} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
  * @returns {string} The processed HTML string.
  */
-export const html = ({ raw: literals }, ...expressions) => {
+export const html = (literals, ...expressions) => {
   let accumulator = "";
 
   for (let i = 0; i !== expressions.length; ++i) {
-    let literal = literals[i];
+    let literal = literals.raw[i];
     let string =
       typeof expressions[i] === "string"
         ? expressions[i]
@@ -60,25 +57,26 @@ export const html = ({ raw: literals }, ...expressions) => {
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else {
-      string = escapeFunction(string);
+      string &&= escapeFunction(string);
     }
 
     accumulator += literal + string;
   }
 
-  return accumulator + literals[expressions.length];
+  return accumulator + literals.raw[expressions.length];
 };
 
 /**
+ * The `htmlGenerator` function acts as the generator version of the `html` function.
  * @param {TemplateStringsArray} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
  * @yields Processed HTML strings.
  * @returns {Generator<string, void, void>} The HTML generator.
  */
-export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
+export const htmlGenerator = function* (literals, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
     let expression = expressions[i];
-    let literal = literals[i];
+    let literal = literals.raw[i];
     let string;
 
     if (typeof expression === "string") {
@@ -118,11 +116,11 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
                   string = `${expression}`;
                 }
 
-                if (!isRaw) {
-                  string = escapeFunction(string);
-                }
-
                 if (string) {
+                  if (!isRaw) {
+                    string = escapeFunction(string);
+                  }
+
                   yield string;
                 }
               }
@@ -133,11 +131,11 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
             string = `${expression}`;
           }
 
-          if (!isRaw) {
-            string = escapeFunction(string);
-          }
-
           if (string) {
+            if (!isRaw) {
+              string = escapeFunction(string);
+            }
+
             yield string;
           }
         }
@@ -151,7 +149,7 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else {
-      string = escapeFunction(string);
+      string &&= escapeFunction(string);
     }
 
     if (literal || string) {
@@ -159,24 +157,22 @@ export const htmlGenerator = function* ({ raw: literals }, ...expressions) {
     }
   }
 
-  if (literals[expressions.length]) {
-    yield literals[expressions.length];
+  if (literals.raw[expressions.length]) {
+    yield literals.raw[expressions.length];
   }
 };
 
 /**
+ * This version of HTML generator should be preferred for asynchronous and streaming use cases.
  * @param {TemplateStringsArray} literals Tagged template literals.
  * @param {...any} expressions Expressions to interpolate.
  * @yields Processed HTML strings.
  * @returns {AsyncGenerator<string, void, void>} The HTML generator.
  */
-export const htmlAsyncGenerator = async function* (
-  { raw: literals },
-  ...expressions
-) {
+export const htmlAsyncGenerator = async function* (literals, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
     let expression = await expressions[i];
-    let literal = literals[i];
+    let literal = literals.raw[i];
     let string;
 
     if (typeof expression === "string") {
@@ -219,11 +215,11 @@ export const htmlAsyncGenerator = async function* (
                   string = `${expression}`;
                 }
 
-                if (!isRaw) {
-                  string = escapeFunction(string);
-                }
-
                 if (string) {
+                  if (!isRaw) {
+                    string = escapeFunction(string);
+                  }
+
                   yield string;
                 }
               }
@@ -234,11 +230,11 @@ export const htmlAsyncGenerator = async function* (
             string = `${expression}`;
           }
 
-          if (!isRaw) {
-            string = escapeFunction(string);
-          }
-
           if (string) {
+            if (!isRaw) {
+              string = escapeFunction(string);
+            }
+
             yield string;
           }
         }
@@ -252,7 +248,7 @@ export const htmlAsyncGenerator = async function* (
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
     } else {
-      string = escapeFunction(string);
+      string &&= escapeFunction(string);
     }
 
     if (literal || string) {
@@ -260,7 +256,7 @@ export const htmlAsyncGenerator = async function* (
     }
   }
 
-  if (literals[expressions.length]) {
-    yield literals[expressions.length];
+  if (literals.raw[expressions.length]) {
+    yield literals.raw[expressions.length];
   }
 };

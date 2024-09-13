@@ -74,7 +74,7 @@ const updateFilePathsWithHashes = async (
   }
 };
 
-const generateHashesAndReplace = async ({
+export const generateHashesAndReplace = async ({
   roots,
   refs,
   prefix,
@@ -124,5 +124,3 @@ const generateHashesAndReplace = async ({
     skipPatterns,
   );
 };
-
-export { generateHashesAndReplace };
