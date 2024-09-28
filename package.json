@@ -27,9 +27,9 @@
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
     "c8": "^10.1.2",
-    "grules": "^0.23.3",
+    "grules": "^0.25.0",
     "tinybench": "^2.9.0",
-    "typescript": ">=5.5.4"
+    "typescript": ">=5.6.2"
   },
   "repository": {
     "type": "git",

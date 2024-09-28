@@ -6,8 +6,8 @@
     "build": "ghtml --roots=assets/ --refs=routes/ --prefix=/p/assets/"
   },
   "dependencies": {
-    "@fastify/static": "^7.0.1",
-    "fastify": "^4.26.1",
+    "@fastify/static": "^8.0.1",
+    "fastify": "^5.0.0",
     "ghtml": "file:../../"
   }
 }

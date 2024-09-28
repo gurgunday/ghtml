@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+
 import { Glob } from "glob";
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
@@ -44,12 +46,12 @@ const updateFilePathsWithHashes = async (
       for (const [path, hash] of fileHashes) {
         const fullPath = prefix + path;
         const escapedPath = fullPath.replace(
-          /[$()*+.?[\\\]^{|}]/g,
+          /[$()*+.?[\\\]^{|}]/gu,
           String.raw`\$&`,
         );
         const regex = new RegExp(
           `(?<path>${escapedPath})(\\?(?<queryString>[^#"'\`]*))?`,
-          "g",
+          "gu",
         );
 
         content = content.replace(

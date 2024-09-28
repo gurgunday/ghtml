@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 const cache = new Map();
 
 /**
- * @param {string} path The path to the file to render.
- * @returns {string} The content of the file.
+ * @param {string} path path
+ * @returns {string} string
  */
 export const includeFile = (path) => {
   let file = cache.get(path);

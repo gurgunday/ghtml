@@ -22,6 +22,11 @@ const generatorExample = function* () {
   yield "</p>";
 };
 
+const generatorExample2 = function* () {
+  yield ["", "<p>"];
+  yield "";
+};
+
 const generatorPromiseExample = function* () {
   yield [
     new Promise((resolve) => {
@@ -31,6 +36,17 @@ const generatorPromiseExample = function* () {
     12n,
   ];
   yield;
+};
+
+const generatorPromiseExample2 = function* () {
+  yield [
+    new Promise((resolve) => {
+      resolve("<p>");
+    }),
+    null,
+    "",
+  ];
+  yield "";
 };
 
 test("renders empty input", () => {
@@ -204,6 +220,18 @@ test("htmlGenerator works with other generators (raw)", () => {
   assert.strictEqual(generator.next().done, true);
 });
 
+test("htmlGenerator works with other generators (raw) /2", () => {
+  const generator = htmlGenerator`<div>!${generatorExample2()}</div>`;
+  let accumulator = "";
+
+  for (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(accumulator, "<div><p></div>");
+  assert.strictEqual(generator.next().done, true);
+});
+
 test("htmlGenerator works with other generators (escaped)", () => {
   const generator = htmlGenerator`<div>${generatorExample()}</div>`;
   let accumulator = "";
@@ -289,6 +317,17 @@ test("htmlAsyncGenerator works with other generators (raw)", async () => {
     accumulator,
     "<div><p>This is a safe description.<script>alert('This is an unsafe description.')</script>12345255</p></div>",
   );
+});
+
+test("htmlAsyncGenerator works with other generators (raw) /2", async () => {
+  const generator = htmlAsyncGenerator`<div>!${generatorPromiseExample2()}</div>`;
+  let accumulator = "";
+
+  for await (const value of generator) {
+    accumulator += value;
+  }
+
+  assert.strictEqual(accumulator, "<div><p></div>");
 });
 
 test("htmlAsyncGenerator works with other generators (escaped)", async () => {

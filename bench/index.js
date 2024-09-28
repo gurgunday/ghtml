@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
+
 import { html } from "../src/index.js";
 import { Bench } from "tinybench";
 import { writeFileSync } from "node:fs";
 import { Buffer } from "node:buffer";
 
 let result = "";
+
 const bench = new Bench({ time: 500 });
 
 bench.add("simple HTML formatting", () => {
@@ -112,7 +114,7 @@ await bench.warmup();
 await bench.run();
 
 const table = bench.table();
-console.table(table);
+globalThis.console.table(table);
 
 writeFileSync(
   "bench/results.json",

@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop, require-unicode-regexp */
+
 const escapeRegExp = /["&'<=>]/g;
 
 const escapeFunction = (string) => {
@@ -35,24 +37,18 @@ const escapeFunction = (string) => {
 };
 
 /**
- * The `html` function is designed to tag template literals and automatically escape their expressions.
- * @param {TemplateStringsArray} literals Tagged template literals.
- * @param {...any} expressions Expressions to interpolate.
- * @returns {string} The processed HTML string.
+ * @param {TemplateStringsArray} literals literals
+ * @param {...any} expressions expressions
+ * @returns {string} string
  */
 export const html = (literals, ...expressions) => {
   let accumulator = "";
 
   for (let i = 0; i !== expressions.length; ++i) {
     let literal = literals.raw[i];
-    let string =
-      typeof expressions[i] === "string"
-        ? expressions[i]
-        : expressions[i] == null
-          ? ""
-          : Array.isArray(expressions[i])
-            ? expressions[i].join("")
-            : `${expressions[i]}`;
+    let string = Array.isArray(expressions[i])
+      ? expressions[i].join("")
+      : String(expressions[i] ?? "");
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
@@ -67,11 +63,10 @@ export const html = (literals, ...expressions) => {
 };
 
 /**
- * The `htmlGenerator` function acts as the generator version of the `html` function.
- * @param {TemplateStringsArray} literals Tagged template literals.
- * @param {...any} expressions Expressions to interpolate.
- * @yields Processed HTML strings.
- * @returns {Generator<string, void, void>} The HTML generator.
+ * @param {TemplateStringsArray} literals literals
+ * @param {...any} expressions expressions
+ * @yields {string} string
+ * @returns {Generator<string, void, void>} Generator<string, void, void>
  */
 export const htmlGenerator = function* (literals, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
@@ -81,12 +76,12 @@ export const htmlGenerator = function* (literals, ...expressions) {
 
     if (typeof expression === "string") {
       string = expression;
-    } else if (expression == null) {
+    } else if (expression === undefined || expression === null) {
       string = "";
     } else {
       if (expression[Symbol.iterator]) {
         const isRaw =
-          literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
+          Boolean(literal) && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
@@ -100,21 +95,17 @@ export const htmlGenerator = function* (literals, ...expressions) {
           if (typeof expression === "string") {
             string = expression;
           } else {
-            if (expression == null) {
+            if (expression === undefined || expression === null) {
               continue;
             }
 
             if (expression[Symbol.iterator]) {
               for (expression of expression) {
-                if (typeof expression === "string") {
-                  string = expression;
-                } else {
-                  if (expression == null) {
-                    continue;
-                  }
-
-                  string = `${expression}`;
+                if (expression === undefined || expression === null) {
+                  continue;
                 }
+
+                string = String(expression);
 
                 if (string) {
                   if (!isRaw) {
@@ -128,7 +119,7 @@ export const htmlGenerator = function* (literals, ...expressions) {
               continue;
             }
 
-            string = `${expression}`;
+            string = String(expression);
           }
 
           if (string) {
@@ -143,7 +134,7 @@ export const htmlGenerator = function* (literals, ...expressions) {
         continue;
       }
 
-      string = `${expression}`;
+      string = String(expression);
     }
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
@@ -163,11 +154,10 @@ export const htmlGenerator = function* (literals, ...expressions) {
 };
 
 /**
- * This version of HTML generator should be preferred for asynchronous and streaming use cases.
- * @param {TemplateStringsArray} literals Tagged template literals.
- * @param {...any} expressions Expressions to interpolate.
- * @yields Processed HTML strings.
- * @returns {AsyncGenerator<string, void, void>} The HTML generator.
+ * @param {TemplateStringsArray} literals literals
+ * @param {...any} expressions expressions
+ * @yields {string} string
+ * @returns {AsyncGenerator<string, void, void>} AsyncGenerator<string, void, void>
  */
 export const htmlAsyncGenerator = async function* (literals, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
@@ -177,12 +167,12 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
 
     if (typeof expression === "string") {
       string = expression;
-    } else if (expression == null) {
+    } else if (expression === undefined || expression === null) {
       string = "";
     } else {
       if (expression[Symbol.iterator] || expression[Symbol.asyncIterator]) {
         const isRaw =
-          literal !== "" && literal.charCodeAt(literal.length - 1) === 33;
+          Boolean(literal) && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
@@ -196,7 +186,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
           if (typeof expression === "string") {
             string = expression;
           } else {
-            if (expression == null) {
+            if (expression === undefined || expression === null) {
               continue;
             }
 
@@ -205,15 +195,11 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
               expression[Symbol.asyncIterator]
             ) {
               for await (expression of expression) {
-                if (typeof expression === "string") {
-                  string = expression;
-                } else {
-                  if (expression == null) {
-                    continue;
-                  }
-
-                  string = `${expression}`;
+                if (expression === undefined || expression === null) {
+                  continue;
                 }
+
+                string = String(expression);
 
                 if (string) {
                   if (!isRaw) {
@@ -227,7 +213,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
               continue;
             }
 
-            string = `${expression}`;
+            string = String(expression);
           }
 
           if (string) {
@@ -242,7 +228,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
         continue;
       }
 
-      string = `${expression}`;
+      string = String(expression);
     }
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {

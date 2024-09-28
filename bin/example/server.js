@@ -1,10 +1,12 @@
+/* eslint-disable n/no-missing-import */
+
 import Fastify from "fastify";
 
 const fastify = Fastify();
 
 // Plugins
 await fastify.register(import("@fastify/static"), {
-  root: new URL("assets/", import.meta.url).pathname,
+  root: new globalThis.URL("assets/", import.meta.url).pathname,
   prefix: "/p/assets/",
   wildcard: false,
   index: false,
@@ -20,5 +22,5 @@ fastify.listen({ port: 5050 }, (err, address) => {
     throw err;
   }
 
-  console.warn(`Server listening at ${address}`);
+  globalThis.console.warn(`Server listening at ${address}`);
 });
