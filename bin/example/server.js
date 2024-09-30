@@ -1,5 +1,3 @@
-/* eslint-disable n/no-missing-import */
-
 import Fastify from "fastify";
 
 const fastify = Fastify();
@@ -17,10 +15,7 @@ await fastify.register(import("@fastify/static"), {
 // Routes
 fastify.register(import("./routes/index.js"));
 
-fastify.listen({ port: 5050 }, (err, address) => {
-  if (err) {
-    throw err;
-  }
+// Listen
+const address = await fastify.listen({ port: 5050 });
 
-  globalThis.console.warn(`Server listening at ${address}`);
-});
+globalThis.console.log(`Server listening at ${address}`);

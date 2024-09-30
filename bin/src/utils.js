@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 import { Glob } from "glob";
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
@@ -8,11 +6,13 @@ import { win32, posix } from "node:path";
 const generateFileHash = async (filePath) => {
   try {
     const fileBuffer = await readFile(filePath);
+
     return createHash("md5").update(fileBuffer).digest("hex").slice(0, 16);
   } catch (err) {
     if (err.code !== "ENOENT") {
       throw err;
     }
+
     return "";
   }
 };
@@ -26,6 +26,7 @@ const updateFilePathsWithHashes = async (
 ) => {
   for (let ref of refs) {
     ref = ref.replaceAll(win32.sep, posix.sep);
+
     if (!ref.endsWith("/")) {
       ref += "/";
     }
@@ -84,11 +85,13 @@ export const generateHashesAndReplace = async ({
   skipPatterns = ["**/node_modules/**"],
 }) => {
   const fileHashes = new Map();
+
   roots = Array.isArray(roots) ? roots : [roots];
   refs = Array.isArray(refs) ? refs : [refs];
 
   for (let root of roots) {
     root = root.replaceAll(win32.sep, posix.sep);
+
     if (!root.endsWith("/")) {
       root += "/";
     }
@@ -114,6 +117,7 @@ export const generateHashesAndReplace = async ({
 
     for (let i = 0; i < files.length; ++i) {
       const fileRelativePath = posix.relative(root, files[i]);
+
       fileHashes.set(fileRelativePath, hashes[i]);
     }
   }

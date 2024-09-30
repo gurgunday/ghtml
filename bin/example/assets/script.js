@@ -1,1 +1,1 @@
-globalThis.console.warn("Hello World!");
+globalThis.console.log("Hello World!");

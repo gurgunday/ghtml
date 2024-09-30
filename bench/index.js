@@ -1,13 +1,11 @@
 /* eslint-disable no-unused-vars */
-
-import { html } from "../src/index.js";
+import { html } from "ghtml";
 import { Bench } from "tinybench";
 import { writeFileSync } from "node:fs";
 import { Buffer } from "node:buffer";
 
-let result = "";
-
 const bench = new Bench({ time: 500 });
+let result = "";
 
 bench.add("simple HTML formatting", () => {
   result = html`<div>Hello, world!</div>`;

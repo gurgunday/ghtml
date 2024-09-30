@@ -18,7 +18,7 @@ const parseArguments = (args) => {
   }
 
   if (!roots || !refs) {
-    globalThis.console.error(
+    globalThis.console.log(
       'Usage: npx ghtml --roots="base/path/to/scan/assets/1/,base/path/to/scan/assets/2/" --refs="views/path/to/append/hashes/1/,views/path/to/append/hashes/2/" [--prefix="/optional/prefix/"]',
     );
     process.exit(1);
@@ -31,10 +31,10 @@ const main = async () => {
   const { roots, refs, prefix } = parseArguments(process.argv.slice(2));
 
   try {
-    globalThis.console.warn(`Generating hashes and updating file paths...`);
-    globalThis.console.warn(`Scanning files in: ${roots}`);
-    globalThis.console.warn(`Updating files in: ${refs}`);
-    globalThis.console.warn(`Using prefix: ${prefix}`);
+    globalThis.console.log(`Generating hashes and updating file paths...`);
+    globalThis.console.log(`Scanning files in: ${roots}`);
+    globalThis.console.log(`Updating files in: ${refs}`);
+    globalThis.console.log(`Using prefix: ${prefix}`);
 
     await generateHashesAndReplace({
       roots,
@@ -42,11 +42,11 @@ const main = async () => {
       prefix,
     });
 
-    globalThis.console.warn(
+    globalThis.console.log(
       "Hash generation and file updates completed successfully.",
     );
   } catch (error) {
-    globalThis.console.error(`Error occurred: ${error.message}`);
+    globalThis.console.log(`Error occurred: ${error.message}`);
     process.exit(1);
   }
 };

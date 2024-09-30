@@ -1,5 +1,3 @@
-/* eslint-disable n/no-missing-import, require-await */
-
 import { html } from "ghtml";
 
 export default async (fastify) => {
@@ -21,7 +19,7 @@ export default async (fastify) => {
         <body>
           !${inner}
         </body>
-      </html> `;
+      </html>`;
   });
 
   fastify.get("/", async (request, reply) => {
