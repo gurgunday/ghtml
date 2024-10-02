@@ -8,23 +8,35 @@ const escapeFunction = (string) => {
     const i = escapeRegExp.lastIndex - 1;
 
     switch (string.charCodeAt(i)) {
-      case 34:
-        escaped += string.slice(start, i) + "&#34;"; // "
+      // "
+      case 34: {
+        escaped += string.slice(start, i) + "&#34;";
         break;
-      case 38:
-        escaped += string.slice(start, i) + "&#38;"; // &
+      }
+      // &
+      case 38: {
+        escaped += string.slice(start, i) + "&#38;";
         break;
-      case 39:
-        escaped += string.slice(start, i) + "&#39;"; // '
+      }
+      // '
+      case 39: {
+        escaped += string.slice(start, i) + "&#39;";
         break;
-      case 60:
-        escaped += string.slice(start, i) + "&#60;"; // <
+      }
+      // <
+      case 60: {
+        escaped += string.slice(start, i) + "&#60;";
         break;
-      case 61:
-        escaped += string.slice(start, i) + "&#61;"; // =
+      }
+      // =
+      case 61: {
+        escaped += string.slice(start, i) + "&#61;";
         break;
-      default: {
-        escaped += string.slice(start, i) + "&#62;"; // >
+      }
+      // >
+      case 62: {
+        escaped += string.slice(start, i) + "&#62;";
+        break;
       }
     }
 
