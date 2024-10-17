@@ -58,7 +58,7 @@ export const html = (literals, ...expressions) => {
     let literal = literals.raw[i];
     let string = Array.isArray(expressions[i])
       ? expressions[i].join("")
-      : String(expressions[i] ?? "");
+      : `${expressions[i] ?? ""}`;
 
     if (literal && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
