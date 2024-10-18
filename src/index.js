@@ -120,7 +120,7 @@ export const htmlGenerator = function* (literals, ...expressions) {
                   continue;
                 }
 
-                string = String(expression);
+                string = `${expression}`;
 
                 if (string.length !== 0) {
                   if (!isRaw) {
@@ -134,7 +134,7 @@ export const htmlGenerator = function* (literals, ...expressions) {
               continue;
             }
 
-            string = String(expression);
+            string = `${expression}`;
           }
 
           if (string.length !== 0) {
@@ -149,7 +149,7 @@ export const htmlGenerator = function* (literals, ...expressions) {
         continue;
       }
 
-      string = String(expression);
+      string = `${expression}`;
     }
 
     if (literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33) {
@@ -217,7 +217,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
                   continue;
                 }
 
-                string = String(expression);
+                string = `${expression}`;
 
                 if (string.length !== 0) {
                   if (!isRaw) {
@@ -231,7 +231,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
               continue;
             }
 
-            string = String(expression);
+            string = `${expression}`;
           }
 
           if (string.length !== 0) {
@@ -246,7 +246,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
         continue;
       }
 
-      string = String(expression);
+      string = `${expression}`;
     }
 
     if (literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33) {
