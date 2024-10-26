@@ -1,10 +1,12 @@
-/* eslint-disable no-unused-vars */
-import { html } from "ghtml";
-import { Bench } from "tinybench";
-import { writeFileSync } from "node:fs";
-import { Buffer } from "node:buffer";
+"use strict";
+
+const { html } = require("..");
+const { Bench } = require("tinybench");
+const { writeFileSync } = require("node:fs");
 
 const bench = new Bench({ time: 500 });
+
+// eslint-disable-next-line no-unused-vars
 let result = "";
 
 bench.add("simple HTML formatting", () => {
@@ -108,13 +110,15 @@ bench.add("sparse escape", () => {
   result = html`<p>${`${"noescape".repeat(250)}<>`.repeat(5)}</p>`;
 });
 
-await bench.warmup();
-await bench.run();
+(async () => {
+  await bench.warmup();
+  await bench.run();
 
-const table = bench.table();
-globalThis.console.table(table);
+  const table = bench.table();
+  globalThis.console.table(table);
 
-writeFileSync(
-  "bench/results.json",
-  Buffer.from(JSON.stringify(table), "utf8").toString("base64"),
-);
+  writeFileSync(
+    "bench/results.json",
+    Buffer.from(JSON.stringify(table), "utf8").toString("base64"),
+  );
+})();

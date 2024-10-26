@@ -4,7 +4,7 @@
   "author": "Gürgün Dayıoğlu",
   "license": "MIT",
   "version": "3.0.13",
-  "type": "module",
+  "type": "commonjs",
   "bin": "./bin/src/index.js",
   "main": "./src/index.js",
   "exports": {
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
     "c8": "^10.1.2",
+    "globals": "^15.11.0",
     "grules": "^0.25.10",
     "tinybench": "^2.9.0",
     "typescript": ">=5.6.2"

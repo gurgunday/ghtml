@@ -1,3 +1,5 @@
+"use strict";
+
 const _isArray = Array.isArray;
 
 const _iterator = Symbol.iterator;
@@ -56,7 +58,7 @@ const escapeFunction = (string) => {
  * @param {...any} expressions expressions
  * @returns {string} string
  */
-export const html = (literals, ...expressions) => {
+const html = (literals, ...expressions) => {
   let accumulator = "";
 
   for (let i = 0; i !== expressions.length; ++i) {
@@ -83,7 +85,7 @@ export const html = (literals, ...expressions) => {
  * @yields {string} string
  * @returns {Generator<string, void, void>} Generator<string, void, void>
  */
-export const htmlGenerator = function* (literals, ...expressions) {
+const htmlGenerator = function* (literals, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
     let expression = expressions[i];
     let literal = literals.raw[i];
@@ -174,7 +176,7 @@ export const htmlGenerator = function* (literals, ...expressions) {
  * @yields {string} string
  * @returns {AsyncGenerator<string, void, void>} AsyncGenerator<string, void, void>
  */
-export const htmlAsyncGenerator = async function* (literals, ...expressions) {
+const htmlAsyncGenerator = async function* (literals, ...expressions) {
   for (let i = 0; i !== expressions.length; ++i) {
     let expression = await expressions[i];
     let literal = literals.raw[i];
@@ -264,3 +266,7 @@ export const htmlAsyncGenerator = async function* (literals, ...expressions) {
     yield literals.raw[expressions.length];
   }
 };
+
+module.exports.html = html;
+module.exports.htmlGenerator = htmlGenerator;
+module.exports.htmlAsyncGenerator = htmlAsyncGenerator;

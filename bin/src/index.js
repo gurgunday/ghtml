@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-import { generateHashesAndReplace } from "./utils.js";
-import process from "node:process";
+
+"use strict";
+
+const { generateHashesAndReplace } = require("./utils.js");
 
 const parseArguments = (args) => {
   let roots = null;

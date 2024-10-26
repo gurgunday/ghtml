@@ -1,7 +1,9 @@
-import { Glob } from "glob";
-import { createHash } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
-import { win32, posix } from "node:path";
+"use strict";
+
+const { Glob } = require("glob");
+const { createHash } = require("node:crypto");
+const { readFile, writeFile } = require("node:fs/promises");
+const { win32, posix } = require("node:path");
 
 const generateFileHash = async (filePath) => {
   try {
@@ -77,7 +79,7 @@ const updateFilePathsWithHashes = async (
   }
 };
 
-export const generateHashesAndReplace = async ({
+const generateHashesAndReplace = async ({
   roots,
   refs,
   prefix,
@@ -130,3 +132,5 @@ export const generateHashesAndReplace = async ({
     skipPatterns,
   );
 };
+
+module.exports.generateHashesAndReplace = generateHashesAndReplace;

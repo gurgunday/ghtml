@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+"use strict";
+
+const { readFileSync } = require("node:fs");
 
 const cache = new Map();
 
@@ -6,7 +8,7 @@ const cache = new Map();
  * @param {string} path path
  * @returns {string} string
  */
-export const includeFile = (path) => {
+const includeFile = (path) => {
   let file = cache.get(path);
 
   if (file === undefined) {
@@ -16,3 +18,5 @@ export const includeFile = (path) => {
 
   return file;
 };
+
+module.exports.includeFile = includeFile;

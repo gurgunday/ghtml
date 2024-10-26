@@ -1,8 +1,10 @@
-import { html, htmlGenerator, htmlAsyncGenerator } from "../src/index.js";
-import { readFile } from "node:fs/promises";
-import { readFileSync } from "node:fs";
-import test from "node:test";
-import assert from "node:assert";
+"use strict";
+
+const { html, htmlGenerator, htmlAsyncGenerator } = require("..");
+const { readFile } = require("node:fs/promises");
+const { readFileSync } = require("node:fs");
+const test = require("node:test");
+const assert = require("node:assert/strict");
 
 const conditionTrue = true;
 const conditionFalse = false;
