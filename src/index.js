@@ -1,9 +1,9 @@
 "use strict";
 
-const _isArray = Array.isArray;
-
 const _iterator = Symbol.iterator;
 const _asyncIterator = Symbol.asyncIterator;
+
+const _isArray = Array.isArray;
 
 const escapeRegExp = /["&'<=>]/g;
 
