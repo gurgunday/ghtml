@@ -139,9 +139,7 @@ test("renders multiple html calls", () => {
 
 test("renders multiple html calls with different expression types", () => {
   const obj = {};
-  obj.toString = () => {
-    return "description of the object";
-  };
+  obj.toString = () => "description of the object";
 
   // prettier-ignore
   assert.strictEqual(
@@ -151,7 +149,7 @@ test("renders multiple html calls with different expression types", () => {
         !${conditionFalse
           ? ""
           :
-            html`<em> ${array1.map((i) => {return i + 1;})} </em>`}<br />
+            html`<em> ${array1.map((i) => i + 1)} </em>`}<br />
         And also, ${false} ${null}${undefined}${obj} is ${true}
       </p>
     `,
@@ -194,9 +192,7 @@ test("htmlGenerator renders unsafe content", () => {
 });
 
 test("htmlGenerator works with nested htmlGenerator calls in an array", () => {
-  const generator = htmlGenerator`<ul>!${[1, 2, 3].map((index) => {
-    return htmlGenerator`<li>${index}</li>`;
-  })}</ul>`;
+  const generator = htmlGenerator`<ul>!${[1, 2, 3].map((index) => htmlGenerator`<li>${index}</li>`)}</ul>`;
   let accumulator = "";
 
   for (const value of generator) {
@@ -347,9 +343,7 @@ test("htmlAsyncGenerator works with other generators (escaped)", async () => {
 });
 
 test("htmlAsyncGenerator works with nested htmlAsyncGenerator calls in an array", async () => {
-  const generator = htmlAsyncGenerator`!${[1, 2, 3].map((i) => {
-    return htmlAsyncGenerator`${i}: <p>${readFile("test/test.md", "utf8")}</p>`;
-  })}`;
+  const generator = htmlAsyncGenerator`!${[1, 2, 3].map((i) => htmlAsyncGenerator`${i}: <p>${readFile("test/test.md", "utf8")}</p>`)}`;
   let accumulator = "";
 
   for await (const value of generator) {
@@ -363,9 +357,7 @@ test("htmlAsyncGenerator works with nested htmlAsyncGenerator calls in an array"
 });
 
 test("htmlAsyncGenerator renders chunks with promises (escaped)", async () => {
-  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => {
-    return htmlAsyncGenerator`${i}: ${readFile("test/test.md", "utf8")}`;
-  })}</ul>`;
+  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => htmlAsyncGenerator`${i}: ${readFile("test/test.md", "utf8")}`)}</ul>`;
   const fileContent = readFileSync("test/test.md", "utf8").replaceAll(
     ">",
     "&#62;",
@@ -394,9 +386,7 @@ test("htmlAsyncGenerator renders chunks with promises (escaped)", async () => {
 });
 
 test("htmlAsyncGenerator renders chunks with promises (raw)", async () => {
-  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => {
-    return htmlAsyncGenerator`${i}: !${readFile("test/test.md", "utf8")}`;
-  })}</ul>`;
+  const generator = htmlAsyncGenerator`<ul>!${[1, 2].map((i) => htmlAsyncGenerator`${i}: !${readFile("test/test.md", "utf8")}`)}</ul>`;
   const fileContent = readFileSync("test/test.md", "utf8");
 
   let value = await generator.next();

@@ -29,18 +29,14 @@ bench.add("multiple string expressions", () => {
 const items1 = ["Item 1", undefined, "Item 2", null, 2000, 1500.5];
 bench.add("array expressions", () => {
   result = html`<ul>
-    ${items1.map((item) => {
-      return html`<li>${item}</li>`;
-    })}
+    ${items1.map((item) => html`<li>${item}</li>`)}
   </ul>`;
 });
 
 const items2 = ["Item 1", "Item <1.5>", "Item 2", "Item <2.5>", "Item 3"];
 bench.add("array expressions with escapable chars", () => {
   result = html`<ul>
-    ${items2.map((item) => {
-      return html`<li>"${item}" & '${item}'</li>`;
-    })}
+    ${items2.map((item) => html`<li>"${item}" & '${item}'</li>`)}
   </ul>`;
 });
 
@@ -59,9 +55,7 @@ bench.add("multiple types of expressions", () => {
     <div>Id: <span>${user.id}</span></div>
     ${null}${123}${456n}
     <ul>
-      !${items2.map((item) => {
-        return html`<li>${item}</li>`;
-      })}
+      !${items2.map((item) => html`<li>${item}</li>`)}
     </ul>
   `;
 });

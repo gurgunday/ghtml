@@ -25,12 +25,12 @@
     "glob": "^10.4.5"
   },
   "devDependencies": {
-    "@fastify/pre-commit": "^2.1.0",
+    "@fastify/pre-commit": "^2.2.0",
     "c8": "^10.1.2",
-    "globals": "^15.11.0",
-    "grules": "^0.25.10",
-    "tinybench": "^3.0.0",
-    "typescript": ">=5.6.2"
+    "globals": "^15.13.0",
+    "grules": "^0.26.1",
+    "tinybench": "^3.0.7",
+    "typescript": ">=5.7.2"
   },
   "repository": {
     "type": "git",
