@@ -1,10 +1,5 @@
 "use strict";
 
-const _iterator = Symbol.iterator;
-const _asyncIterator = Symbol.asyncIterator;
-
-const _isArray = Array.isArray;
-
 const escapeRegExp = /["&'<=>]/g;
 
 const escapeFunction = (string) => {
@@ -60,10 +55,11 @@ const escapeFunction = (string) => {
  */
 const html = (literals, ...expressions) => {
   let accumulator = "";
+  let i = 0;
 
-  for (let i = 0; i !== expressions.length; ++i) {
+  for (; i !== expressions.length; ++i) {
     let literal = literals.raw[i];
-    let string = _isArray(expressions[i])
+    let string = Array.isArray(expressions[i])
       ? expressions[i].join("")
       : `${expressions[i] ?? ""}`;
 
@@ -96,7 +92,7 @@ const htmlGenerator = function* (literals, ...expressions) {
     } else if (expression === undefined || expression === null) {
       string = "";
     } else {
-      if (typeof expression[_iterator] === "function") {
+      if (typeof expression[Symbol.iterator] === "function") {
         const isRaw =
           literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
 
@@ -116,7 +112,7 @@ const htmlGenerator = function* (literals, ...expressions) {
               continue;
             }
 
-            if (typeof expression[_iterator] === "function") {
+            if (typeof expression[Symbol.iterator] === "function") {
               for (expression of expression) {
                 if (expression === undefined || expression === null) {
                   continue;
@@ -188,8 +184,8 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
       string = "";
     } else {
       if (
-        typeof expression[_iterator] === "function" ||
-        typeof expression[_asyncIterator] === "function"
+        typeof expression[Symbol.iterator] === "function" ||
+        typeof expression[Symbol.asyncIterator] === "function"
       ) {
         const isRaw =
           literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
@@ -211,8 +207,8 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
             }
 
             if (
-              typeof expression[_iterator] === "function" ||
-              typeof expression[_asyncIterator] === "function"
+              typeof expression[Symbol.iterator] === "function" ||
+              typeof expression[Symbol.asyncIterator] === "function"
             ) {
               for await (expression of expression) {
                 if (expression === undefined || expression === null) {
