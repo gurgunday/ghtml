@@ -63,9 +63,9 @@ const html = (literals, ...expressions) => {
       ? expressions[i].join("")
       : `${expressions[i] ?? ""}`;
 
-    if (literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length !== 0) {
+    } else if (string.length) {
       string = escapeFunction(string);
     }
 
@@ -94,13 +94,13 @@ const htmlGenerator = function* (literals, ...expressions) {
     } else {
       if (typeof expression[Symbol.iterator] === "function") {
         const isRaw =
-          literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
+          literal.length && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
         }
 
-        if (literal.length !== 0) {
+        if (literal.length) {
           yield literal;
         }
 
@@ -120,7 +120,7 @@ const htmlGenerator = function* (literals, ...expressions) {
 
                 string = `${expression}`;
 
-                if (string.length !== 0) {
+                if (string.length) {
                   if (!isRaw) {
                     string = escapeFunction(string);
                   }
@@ -135,7 +135,7 @@ const htmlGenerator = function* (literals, ...expressions) {
             string = `${expression}`;
           }
 
-          if (string.length !== 0) {
+          if (string.length) {
             if (!isRaw) {
               string = escapeFunction(string);
             }
@@ -150,18 +150,18 @@ const htmlGenerator = function* (literals, ...expressions) {
       string = `${expression}`;
     }
 
-    if (literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length !== 0) {
+    } else if (string.length) {
       string = escapeFunction(string);
     }
 
-    if (literal.length !== 0 || string.length !== 0) {
+    if (literal.length || string.length) {
       yield literal + string;
     }
   }
 
-  if (literals.raw[expressions.length].length !== 0) {
+  if (literals.raw[expressions.length].length) {
     yield literals.raw[expressions.length];
   }
 };
@@ -188,13 +188,13 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
         typeof expression[Symbol.asyncIterator] === "function"
       ) {
         const isRaw =
-          literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33;
+          literal.length && literal.charCodeAt(literal.length - 1) === 33;
 
         if (isRaw) {
           literal = literal.slice(0, -1);
         }
 
-        if (literal.length !== 0) {
+        if (literal.length) {
           yield literal;
         }
 
@@ -217,7 +217,7 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
 
                 string = `${expression}`;
 
-                if (string.length !== 0) {
+                if (string.length) {
                   if (!isRaw) {
                     string = escapeFunction(string);
                   }
@@ -232,7 +232,7 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
             string = `${expression}`;
           }
 
-          if (string.length !== 0) {
+          if (string.length) {
             if (!isRaw) {
               string = escapeFunction(string);
             }
@@ -247,18 +247,18 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
       string = `${expression}`;
     }
 
-    if (literal.length !== 0 && literal.charCodeAt(literal.length - 1) === 33) {
+    if (literal.length && literal.charCodeAt(literal.length - 1) === 33) {
       literal = literal.slice(0, -1);
-    } else if (string.length !== 0) {
+    } else if (string.length) {
       string = escapeFunction(string);
     }
 
-    if (literal.length !== 0 || string.length !== 0) {
+    if (literal.length || string.length) {
       yield literal + string;
     }
   }
 
-  if (literals.raw[expressions.length].length !== 0) {
+  if (literals.raw[expressions.length].length) {
     yield literals.raw[expressions.length];
   }
 };
