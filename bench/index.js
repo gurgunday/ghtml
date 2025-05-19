@@ -105,7 +105,6 @@ bench.add("sparse escape", () => {
 });
 
 (async () => {
-  await bench.warmup();
   await bench.run();
 
   const table = bench.table();
