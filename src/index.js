@@ -3,10 +3,14 @@
 const escapeRegExp = /["&'<=>]/g;
 
 const escapeFunction = (string) => {
+  if (!escapeRegExp.test(string)) {
+    return string;
+  }
+
   let escaped = "";
   let start = 0;
 
-  while (escapeRegExp.test(string)) {
+  do {
     const i = escapeRegExp.lastIndex - 1;
 
     switch (string.charCodeAt(i)) {
@@ -43,7 +47,7 @@ const escapeFunction = (string) => {
     }
 
     start = escapeRegExp.lastIndex;
-  }
+  } while (escapeRegExp.test(string));
 
   return escaped + string.slice(start);
 };
@@ -55,8 +59,9 @@ const escapeFunction = (string) => {
  */
 const html = (literals, ...expressions) => {
   let accumulator = "";
+  const expressionsLength = expressions.length;
 
-  for (let i = 0; i !== expressions.length; ++i) {
+  for (let i = 0; i < expressionsLength; ++i) {
     let literal = literals.raw[i];
     let string =
       typeof expressions[i] === "string"
@@ -76,7 +81,7 @@ const html = (literals, ...expressions) => {
     accumulator += literal + string;
   }
 
-  return accumulator + literals.raw[expressions.length];
+  return accumulator + literals.raw[expressionsLength];
 };
 
 /**
@@ -86,7 +91,9 @@ const html = (literals, ...expressions) => {
  * @returns {Generator<string, void, void>} Generator<string, void, void>
  */
 const htmlGenerator = function* (literals, ...expressions) {
-  for (let i = 0; i !== expressions.length; ++i) {
+  const expressionsLength = expressions.length;
+
+  for (let i = 0; i < expressionsLength; ++i) {
     let expression = expressions[i];
     let literal = literals.raw[i];
     let string;
@@ -165,8 +172,8 @@ const htmlGenerator = function* (literals, ...expressions) {
     }
   }
 
-  if (literals.raw[expressions.length].length) {
-    yield literals.raw[expressions.length];
+  if (literals.raw[expressionsLength].length) {
+    yield literals.raw[expressionsLength];
   }
 };
 
@@ -177,7 +184,9 @@ const htmlGenerator = function* (literals, ...expressions) {
  * @returns {AsyncGenerator<string, void, void>} AsyncGenerator<string, void, void>
  */
 const htmlAsyncGenerator = async function* (literals, ...expressions) {
-  for (let i = 0; i !== expressions.length; ++i) {
+  const expressionsLength = expressions.length;
+
+  for (let i = 0; i < expressionsLength; ++i) {
     let expression = await expressions[i];
     let literal = literals.raw[i];
     let string;
@@ -262,8 +271,8 @@ const htmlAsyncGenerator = async function* (literals, ...expressions) {
     }
   }
 
-  if (literals.raw[expressions.length].length) {
-    yield literals.raw[expressions.length];
+  if (literals.raw[expressionsLength].length) {
+    yield literals.raw[expressionsLength];
   }
 };
 
