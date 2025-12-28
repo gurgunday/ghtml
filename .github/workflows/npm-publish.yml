@@ -16,10 +16,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: ^20
+          node-version: ^22
           registry-url: https://registry.npmjs.org
       - run: npm install
       - run: npm run typescript
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --provenance
