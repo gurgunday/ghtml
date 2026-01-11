@@ -1,7 +1,6 @@
 "use strict";
 
 const escapeRegExp = /["&'<=>]/g;
-
 const escapeFunction = (string) => {
   if (!escapeRegExp.test(string)) {
     return string;
